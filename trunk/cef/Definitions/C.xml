@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><highlightDefinition version="1.2">	<name>C/C++</name>
+
+	<blockStartMarker indent="1">\{\s*(?:$|//|/\*|\\)|\s*/\*\s*$</blockStartMarker>
+	<blockEndMarker>^\s*\}|^\s*\*/</blockEndMarker>	
+	
+	<symbols>
+		<symbol type="Function C">
+			<entryRegEx>^[ \t]*(?:[\w0-9_*]+\s+){1,3}[\w0-9_*]+[ \t]*\([\]\[\w0-9_,\s*&amp;&lt;&gt;/]*\)(?!;)(?=\s*\{?)</entryRegEx>
+		</symbol>
+		<symbol type="Method">
+			<entryRegEx>^[ \t]*(?:[\w0-9_*]+(?:::[\w0-9_]+)?\s+){0,3}[\w0-9_]+::[\w0-9_]+[ \t]*\([\]\[\w0-9_,\s*&amp;&lt;&gt;/]*\)(?=\s*\{?)</entryRegEx>
+		</symbol>
+		<symbol type="Class">
+			<entryRegEx>^[ \t]*(?:template[\t ]*&lt;[^&gt;]*&gt;[\t\r\n ]*)?class[\t ]([\w0-9_]*)(?:[\t ]*:[\t ]*[\w0-9_]+[\t ][\w0-9_&lt;&gt;]+)?(?=\s*\{?)</entryRegEx>
+		</symbol>
+		<symbol type="#define">
+			<entryRegEx>^\s*#define[ \t]*([\w\d()]*)[ \t]+[^\n\r]*[\n\r]</entryRegEx>
+		</symbol>				
+	</symbols>
+	<contexts defaultColor="#0" caseSensitive="yes">		<highlightContext name="Characters" highlightColor="#FF">			<startRegEx>'</startRegEx>			<endRegEx>(\\'')|(.')</endRegEx>		</highlightContext>		<highlightContext name="Preprocessor" highlightColor="#683821">			<startRegEx>#</startRegEx>			<endRegEx>[\n\r]</endRegEx>			<highlightContext name="Numbers" highlightColor="#FF">				<entryRegEx>(?&lt;=[^\w\d]|^)(((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+\-]?[0-9]+)?[fFlL]?)|((([1-9][0-9]*)|0[0-7]*|(0[xX][0-9a-fA-F]+))(([uU][lL]?)|([lL][uU]?))?))(?=[^\w\d]|$)</entryRegEx>			</highlightContext>		</highlightContext>		<highlightContext name="AutodocComment" highlightColor="#236E25">			<startRegEx>/\*"</startRegEx>			<endRegEx>"\*/</endRegEx>		</highlightContext>		<highlightContext name="Comment" highlightColor="#236E25">			<startRegEx>/\*</startRegEx>			<endRegEx>\*/</endRegEx>		</highlightContext>		<highlightContext name="SingleComment" highlightColor="#236E25">			<startRegEx>//</startRegEx>			<endRegEx>[\n\r]</endRegEx>		</highlightContext>		<highlightContext name="String" highlightColor="#760F15">			<startRegEx>"</startRegEx>			<endRegEx>(((?&lt;!\\)(\\\\)*)|^)"</endRegEx>		</highlightContext>        <highlightContext name="Keywords" highlightColor="#881350">            <keywords>                <string>break</string>                <string>case</string>                <string>continue</string>                <string>default</string>                <string>do</string>                <string>else</string>                <string>enum</string>                <string>extern</string>                <string>for</string>                <string>goto</string>                <string>if</string>                <string>NULL</string>                <string>void</string>                <string>return</string>                <string>sizeof</string>                <string>struct</string>                <string>switch</string>                <string>typedef</string>                <string>union</string>                <string>while</string>                <string>self</string>                <string>super</string>                <string>int</string>                <string>long</string>                <string>float</string>                <string>double</string>                <string>char</string>                <string>unichar</string>                <string>unsigned</string>                <string>signed</string>                <string>const</string>                <string>extern</string>                <string>static</string>                <string>auto</string>                <string>register</string>                <string>short</string>                <string>volatile</string>
+				<string>class</string>
+				<string>public</string>
+				<string>protected</string>
+				<string>private</string>
+				<string>this</string>            </keywords>        </highlightContext>        <highlightContext name="Numbers" highlightColor="#FF">            <entryRegEx>(?&lt;=[^\w\d]|^)(((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+\-]?[0-9]+)?[fFlL]?)|((([1-9][0-9]*)|0[0-7]*|(0[xX][0-9a-fA-F]+))(([uU][lL]?)|([lL][uU]?))?))(?=[^\w\d]|$)</entryRegEx>        </highlightContext>        <highlightContext name="Functions" highlightColor="#3369">            <entryRegEx>([A-Za-z0-9_]+ *)\(</entryRegEx>        </highlightContext>	</contexts></highlightDefinition>
