@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<highlightDefinition version="1.2">
+	<name>XML/XHTML</name>
+
+	<blockStartMarker indent="1">^\s*(&lt;[^!?%/](?!.+?(/&gt;|&lt;/.+?&gt;))|&lt;[!%]--(?!.+?--%?&gt;)|&lt;%[!]?(?!.+?%&gt;))</blockStartMarker>
+	<blockEndMarker>^\s*(&lt;/[^&gt;]+&gt;|[/%]&gt;|--&gt;)\s*$</blockEndMarker>
+	
+	<symbols>
+		<symbol type="Tags">
+			<entryRegEx>&lt;\w+\s+[^&gt;]*id *= *"([^"]*)"[^&gt;]*&gt;</entryRegEx>
+		</symbol>								
+	</symbols>
+
+	<placeholders highlightColor="#000000" backgroundColor="#e9effa" bold = "true">\{#(.+?)#\}</placeholders>
+
+	<contexts defaultColor="#0" caseSensitive="no">		
+		<highlightContext name="Comment" highlightColor="#236E25">
+			<startRegEx>&lt;!--</startRegEx>
+			<endRegEx>--&gt;</endRegEx>
+			<highlightContext name="todos" highlightColor="#FF0000" backgroundColor="#FFFF00">
+				<keywords>
+                		<string>TODO</string>
+				<string>HACK</string>
+				</keywords>
+			</highlightContext>	
+		</highlightContext>
+
+		<highlightContext name="CDATA" highlightColor="#FF0000">
+			<startRegEx>&lt;!\s*\[CDATA\s*\[</startRegEx>
+			<endRegEx>\]\s*\]\s*&gt;</endRegEx>
+		</highlightContext>
+		
+		<highlightContext name="Doctype" highlightColor="#236E25">
+			<startRegEx>&lt;!</startRegEx>
+			<endRegEx>&gt;</endRegEx>
+		</highlightContext>
+		
+		<highlightContext name="Escape" highlightColor="#236E25">
+			<startRegEx>&lt;\?</startRegEx>
+			<endRegEx>\?&gt;</endRegEx>
+		</highlightContext>
+					
+        <highlightContext name="Tags" highlightColor="#881280">
+            <entryRegEx>(&lt;[^&gt;]*&gt;)</entryRegEx>
+            
+            <highlightContext name="Strings in Tags" highlightColor="#1A1AA6">
+                <entryRegEx>("[^"&gt;&lt;]*")</entryRegEx>
+            </highlightContext>
+            
+            <highlightContext name="Single Strings in Tags" highlightColor="#1A1AA6">
+                <entryRegEx>('[^'&gt;&lt;]*')</entryRegEx>
+            </highlightContext>
+            
+            <highlightContext name="Attributes in Tags" highlightColor="#994500">
+                <entryRegEx>([\w-]*)[ \t]*=(?=[ \t]*"[^"&gt;&lt;]*")</entryRegEx>
+            </highlightContext>    
+        </highlightContext>
+        
+        <highlightContext name="Entities" highlightColor="#881280" backgroundColor="#FFFF00">
+            <entryRegEx>(&amp;\w{1,8};)</entryRegEx>
+        </highlightContext>
+
+	</contexts>
+</highlightDefinition>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<highlightDefinition version="1.2">
+	<name>REALbasic</name>
+
+	<blockStartMarker indent="1">^\s*(?:if.+?then\s*(?!.+?)|for|while|select|class|module|try|catch|^\s*(?:protected|private)?\s*(?&lt;!end)\s*(?:sub|function)|else)</blockStartMarker>
+	<blockEndMarker>^\s*(?:end|wend|next|else|catch|elseif)(?:\s+|$)</blockEndMarker>
+	
+	<symbols>
+		<symbol type="Class">
+			<entryRegEx>^\s*class\s+\w+\s*</entryRegEx>
+		</symbol>
+		<symbol type="Method">
+			<entryRegEx>^\s*(?:protected|private)?\s*(?&lt;!end)\s*(?:sub|function).+?\([^\)]*\)\s*(?:as\s*\w+\s*)?</entryRegEx>
+		</symbol>
+		<symbol type="Module">
+			<entryRegEx>^\s*module\s+\w+\s*</entryRegEx>
+		</symbol>		
+	</symbols>
+	
+	<contexts defaultColor="#0" caseSensitive="no">		
+        <highlightContext name="Doubles" highlightColor="#006532">
+            <entryRegEx>(?&lt;=[^\w\d]|^)(([0-9]+\.[0-9]*)|([0-9]{11,}))(?=[^\w\d]|$)</entryRegEx>
+        </highlightContext>    	
+        
+        <highlightContext name="Integers" highlightColor="#326598">
+            <entryRegEx>(?&lt;=[^\w\d]|^)([0-9]{1,10})(?=[^\w\d]|$)</entryRegEx>
+        </highlightContext>
+
+	<highlightContext name="PreProcessor" highlightColor="#0000FF">
+            <entryRegEx>(#\w+)</entryRegEx>
+        </highlightContext>        
+		
+		<highlightContext name="Comment" highlightColor="#7F0000" italic = "true">
+			<startRegEx>'</startRegEx>
+			<endRegEx>[\n\r]</endRegEx>
+		</highlightContext>
+		
+		<highlightContext name="C-Comment" highlightColor="#7F0000" italic = "true">
+			<startRegEx>//</startRegEx>
+			<endRegEx>[\n\r]</endRegEx>
+		</highlightContext>
+		
+		<highlightContext name="String" highlightColor="#6500FE">
+			<startRegEx>"</startRegEx>
+			<endRegEx>[^"\n\r]*["\n\r]</endRegEx>
+		</highlightContext>
+
+        <highlightContext name="Keywords" highlightColor="#0000FF" bold="true">
+            <keywords>
+                <string>And</string>
+                <string>Loop</string>
+                <string>Array</string>
+                <string>Me</string>
+                <string>As</string>
+                <string>Mod</string>
+                <string>Boolean</string>
+                <string>Module</string>
+                <string>ByRef</string>
+                <string>Namespace</string>
+                <string>ByVal</string>
+                <string>New</string>
+                <string>Call</string>
+                <string>Next</string>
+                <string>Case</string>
+                <string>Nil</string>
+                <string>Catch</string>
+                <string>Not</string>
+                <string>Class</string>
+                <string>Object</string>
+                <string>Color</string>
+                <string>Of</string>
+                <string>Const</string>
+                <string>Or</string>
+                <string>DebugPrint</string>
+                <string>Private</string>
+                <string>Declare</string>
+                <string>Protected</string>
+                <string>Dim</string>
+                <string>Public</string>
+                <string>Do</string>
+                <string>Raise</string>
+                <string>Double</string>
+                <string>Redim</string>
+                <string>Downto</string>
+                <string>Rem</string>
+                <string>Each</string>
+                <string>Return</string>
+                <string>Else</string>
+                <string>Return</string>
+                <string>ElseIf</string>
+                <string>Select</string>
+                <string>End</string>
+                <string>Self</string>
+                <string>Event</string>
+                <string>Shared</string>
+                <string>Exception</string>
+                <string>Single</string>
+                <string>Exit</string>
+                <string>Static</string>
+                <string>False</string>
+                <string>Step</string>
+                <string>Finally</string>
+                <string>String</string>
+                <string>For</string>
+                <string>Sub</string>
+                <string>Function</string>
+                <string>Then</string>
+                <string>GoTo</string>
+                <string>To</string>
+                <string>Handles</string>
+                <string>True</string>
+                <string>If</string>
+                <string>Try</string>
+                <string>Implements</string>
+                <string>Until</string>
+                <string>In</string>
+                <string>Wend</string>
+                <string>Inherits</string>
+                <string>While</string>
+                <string>Inline68K</string>
+                <string>#bad</string>
+                <string>Integer</string>
+                <string>#else</string>
+                <string>Interface</string>
+                <string>#endif</string>
+                <string>Isa</string>
+                <string>#if</string>
+                <string>Lib</string>
+                <string>#pragma</string>
+                <string>Assigns</string>
+                <string>Extends</string>
+                <string>Paramarray</string>
+            </keywords>
+        </highlightContext>
+	</contexts>
+</highlightDefinition>

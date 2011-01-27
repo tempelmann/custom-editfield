@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><highlightDefinition version="1.1">	<name>Objective-C</name>
+	
+	<blockStartMarker indent="1">\{\s*(?:$|//|/\*)|\s*/\*|^\s*@(?!end)\w+</blockStartMarker>
+	<blockEndMarker>^\s*\}|\s*\*/|^\s*@end</blockEndMarker>
+		<contexts defaultColor="#0" caseSensitive="yes">       
+        
+        <highlightContext name="Characters" highlightColor="#FF">            <startRegEx>'</startRegEx>            <endRegEx>(\\'')|(.')</endRegEx>        </highlightContext>
+        
+        <highlightContext name="Preprocessor" highlightColor="#683821">			<startRegEx>#</startRegEx>			<endRegEx>[\n\r]</endRegEx>			<highlightContext name="Numbers" highlightColor="#FF">				<entryRegEx>(?&lt;=[^\w\d]|^)(((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+\-]?[0-9]+)?[fFlL]?)|((([1-9][0-9]*)|0[0-7]*|(0[xX][0-9a-fA-F]+))(([uU][lL]?)|([lL][uU]?))?))(?=[^\w\d]|$)</entryRegEx>			</highlightContext>		</highlightContext>
+        
+        <highlightContext name="AutodocComment" highlightColor="#236E25" italic="true">            <startRegEx>/\*"</startRegEx>            <endRegEx>"\*/</endRegEx>        </highlightContext>
+        
+        <highlightContext name="Comment" highlightColor="#236E25" italic="true">            <startRegEx>/\*</startRegEx>            <endRegEx>\*/</endRegEx>        </highlightContext>
+        
+        <highlightContext name="SingleComment" highlightColor="#236E25" italic="true">            <startRegEx>//</startRegEx>            <endRegEx>[\n\r]</endRegEx>        </highlightContext>
+        
+        <highlightContext name="String" highlightColor="#760f15">            <startRegEx>@?"</startRegEx>            <endRegEx>(((?&lt;!\\)(\\\\)*)|^)"</endRegEx>        </highlightContext>
+		
+		<highlightContext name="Special Keywords" highlightColor="#881350">
+			<entryRegEx>@\w+</entryRegEx>
+		</highlightContext>		        <highlightContext name="Keywords" highlightColor="#881350">            <keywords>               
+                <string>break</string>
+                <string>case</string>
+                <string>continue</string>
+                <string>default</string>
+                <string>do</string>
+                <string>else</string>
+                <string>enum</string>
+                <string>extern</string>
+                <string>for</string>
+                <string>goto</string>
+                <string>if</string>
+                <string>id</string>
+                <string>NULL</string>
+                <string>nil</string>
+                <string>Nil</string>
+                <string>void</string>
+                <string>return</string>
+                <string>sizeof</string>
+                <string>struct</string>
+                <string>switch</string>
+                <string>typedef</string>
+                <string>union</string>
+                <string>while</string>
+				<!--
+                <string>@defs</string>
+                <string>@encode</string>
+                <string>@selector</string>
+				-->
+                <string>self</string>
+                <string>super</string>
+                <string>YES</string>
+                <string>NO</string>
+                <string>IBAction</string>
+                <string>IBOutlet</string>
+                <string>int</string>
+                <string>long</string>
+                <string>float</string>
+                <string>double</string>
+                <string>char</string>
+                <string>unichar</string>
+                <string>unsigned</string>
+                <string>signed</string>
+                <string>const</string>
+                <string>static</string>
+                <string>BOOL</string>
+                <string>SEL</string>
+                <string>Class</string>
+                <string>auto</string>
+                <string>register</string>
+                <string>short</string>
+                <string>volatile</string>                                </keywords>        </highlightContext>
+        
+        <highlightContext name="Memory Mgmt" highlightColor="#FF0000" bold="true">            <keywords>                <string>new</string>
+                <string>alloc</string>
+                <string>allocWithZone</string>
+                <string>release</string>
+                <string>autorelease</string>
+                <string>copy</string>
+                <string>copyWithZone</string>
+                <string>mutableCopy</string>
+                <string>mutableCopyWithZone</string>
+                <string>retain</string>                                </keywords>        </highlightContext>
+                <highlightContext name="Numbers" highlightColor="#FF">            <entryRegEx>(?&lt;=[^\w\d]|^)(((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+\-]?[0-9]+)?[fFlL]?)|((([1-9][0-9]*)|0[0-7]*|(0[xX][0-9a-fA-F]+))(([uU][lL]?)|([lL][uU]?))?))(?=[^\w\d]|$)</entryRegEx>        </highlightContext>
+                <highlightContext name="Functions" highlightColor="#3369">            <entryRegEx>([A-Za-z0-9_]+ *)\(</entryRegEx>        </highlightContext>	
+        
+        <highlightContext name="Messages" highlightColor="#3369">            <regExes>
+                <string>[^:]\([^)]*\)[\s]*([A-Za-z0-9_]+)[\s]*[{;]</string>
+                <string>(?=\))[\s]*([A-Za-z0-9_]+:)</string>
+                <string>\s*([A-Za-z0-9_]+:)</string>
+                <!--<string>\s*([A-Za-z0-9_]+)(?=])</string>-->
+            </regExes>			
+        </highlightContext>					
+        	</contexts></highlightDefinition>
