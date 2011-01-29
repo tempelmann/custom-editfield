@@ -26,7 +26,7 @@
             <entryRegEx>(?&lt;=[^\w\d]|^)([0-9]{1,10})(?=[^\w\d]|$)</entryRegEx>
         </highlightContext>
 
-	<highlightContext name="PreProcessor" highlightColor="#0000FF">
+		<highlightContext name="PreProcessor" highlightColor="#0000FF">
             <entryRegEx>(#\w+)</entryRegEx>
         </highlightContext>        
 		
@@ -40,96 +40,129 @@
 			<endRegEx>[\n\r]</endRegEx>
 		</highlightContext>
 		
+		<highlightContext name="REM-Comment" highlightColor="#7F0000" italic = "true">
+			<startRegEx>^\s*rem</startRegEx>
+			<endRegEx>[\n\r]</endRegEx>
+		</highlightContext>
+		
 		<highlightContext name="String" highlightColor="#6500FE">
 			<startRegEx>"</startRegEx>
 			<endRegEx>[^"\n\r]*["\n\r]</endRegEx>
 		</highlightContext>
 
+        <highlightContext name="BasicTypes" highlightColor="#0000FF" bold="true">
+            <keywords>
+				<string>Boolean</string>
+				<string>Color</string>
+				<string>Double</string>
+				<string>Integer</string>
+				<string>Int8</string>
+				<string>UInt8</string>
+				<string>Int16</string>
+				<string>UInt16</string>
+				<string>Int32</string>
+				<string>UInt32</string>
+				<string>Int64</string>
+				<string>UInt64</string>
+				<string>Single</string>
+				<string>String</string>
+				<string>CFString</string>
+				<string>Ptr</string>
+            </keywords>
+        </highlightContext>
+
         <highlightContext name="Keywords" highlightColor="#0000FF" bold="true">
             <keywords>
-                <string>And</string>
-                <string>Loop</string>
-                <string>Array</string>
-                <string>Me</string>
-                <string>As</string>
-                <string>Mod</string>
-                <string>Boolean</string>
-                <string>Module</string>
-                <string>ByRef</string>
-                <string>Namespace</string>
-                <string>ByVal</string>
-                <string>New</string>
-                <string>Call</string>
-                <string>Next</string>
-                <string>Case</string>
-                <string>Nil</string>
-                <string>Catch</string>
-                <string>Not</string>
-                <string>Class</string>
-                <string>Object</string>
-                <string>Color</string>
-                <string>Of</string>
-                <string>Const</string>
-                <string>Or</string>
-                <string>DebugPrint</string>
-                <string>Private</string>
-                <string>Declare</string>
-                <string>Protected</string>
-                <string>Dim</string>
-                <string>Public</string>
-                <string>Do</string>
-                <string>Raise</string>
-                <string>Double</string>
-                <string>Redim</string>
-                <string>Downto</string>
-                <string>Rem</string>
-                <string>Each</string>
-                <string>Return</string>
-                <string>Else</string>
-                <string>Return</string>
-                <string>ElseIf</string>
-                <string>Select</string>
-                <string>End</string>
-                <string>Self</string>
-                <string>Event</string>
-                <string>Shared</string>
-                <string>Exception</string>
-                <string>Single</string>
-                <string>Exit</string>
-                <string>Static</string>
-                <string>False</string>
-                <string>Step</string>
-                <string>Finally</string>
-                <string>String</string>
-                <string>For</string>
-                <string>Sub</string>
-                <string>Function</string>
-                <string>Then</string>
-                <string>GoTo</string>
-                <string>To</string>
-                <string>Handles</string>
-                <string>True</string>
-                <string>If</string>
-                <string>Try</string>
-                <string>Implements</string>
-                <string>Until</string>
-                <string>In</string>
-                <string>Wend</string>
-                <string>Inherits</string>
-                <string>While</string>
-                <string>Inline68K</string>
-                <string>#bad</string>
-                <string>Integer</string>
-                <string>#else</string>
-                <string>Interface</string>
-                <string>#endif</string>
-                <string>Isa</string>
-                <string>#if</string>
-                <string>Lib</string>
-                <string>#pragma</string>
-                <string>Assigns</string>
-                <string>Extends</string>
-                <string>Paramarray</string>
+				<string>#Bad</string>
+				<string>#Else</string>
+				<string>#ElseIf</string>
+				<string>#EndIf</string>
+				<string>#If</string>
+				<string>#Pragma</string>
+				<string>#Tag</string>
+				<string>AddressOf</string>
+				<string>And</string>
+				<string>Array</string>
+				<string>As</string>
+				<string>Assigns</string>
+				<string>ByRef</string>
+				<string>ByVal</string>
+				<string>Call</string>
+				<string>Case</string>
+				<string>Catch</string>
+				<string>Class</string>
+				<string>Const</string>
+				<string>Continue</string>
+				<string>Declare</string>
+				<string>Delegate</string>
+				<string>Dim</string>
+				<string>Do</string>
+				<string>DownTo</string>
+				<string>Each</string>
+				<string>Else</string>
+				<string>ElseIf</string>
+				<string>End</string>
+				<string>Enum</string>
+				<string>Event</string>
+				<string>Exception</string>
+				<string>Exit</string>
+				<string>Extends</string>
+				<string>False</string>
+				<string>Finally</string>
+				<string>For</string>
+				<string>Function</string>
+				<string>Global</string>
+				<string>GoTo</string>
+				<string>Handles</string>
+				<string>If</string>
+				<string>Implements</string>
+				<string>In</string>
+				<string>Inherits</string>
+				<string>Inline68K</string>
+				<string>Interface</string>
+				<string>Is</string>
+				<string>IsA</string>
+				<string>Lib</string>
+				<string>Loop</string>
+				<string>Me</string>
+				<string>Mod</string>
+				<string>Module</string>
+				<string>Namespace</string>
+				<string>New</string>
+				<string>Next</string>
+				<string>Nil</string>
+				<string>Not</string>
+				<string>Object</string>
+				<string>Of</string>
+				<string>Optional</string>
+				<string>Or</string>
+				<string>ParamArray</string>
+				<string>Private</string>
+				<string>Property</string>
+				<string>Protected</string>
+				<string>Public</string>
+				<string>Raise</string>
+				<string>RaiseEvent</string>
+				<string>Redim</string>
+				<string>Rem</string>
+				<string>Return</string>
+				<string>Select</string>
+				<string>Self</string>
+				<string>Shared</string>
+				<string>Soft</string>
+				<string>Static</string>
+				<string>Step</string>
+				<string>Structure</string>
+				<string>Sub</string>
+				<string>Super</string>
+				<string>Then</string>
+				<string>To</string>
+				<string>True</string>
+				<string>Try</string>
+				<string>Until</string>
+				<string>Wend</string>
+				<string>While</string>
+				<string>With</string>
             </keywords>
         </highlightContext>
 	</contexts>
