@@ -41,7 +41,7 @@
 		</highlightContext>
 		
 		<highlightContext name="REM-Comment" highlightColor="#7F0000" italic = "true">
-			<startRegEx>^\s*rem</startRegEx>
+			<startRegEx>^\s*rem\s</startRegEx>
 			<endRegEx>[\n\r]</endRegEx>
 		</highlightContext>
 		
