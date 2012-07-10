@@ -4,7 +4,9 @@
 
 	<blockStartMarker indent="1">^\s*(?:if.+?then\s*(?!.+?)|for|while|select|class|module|try|catch|^\s*(?:protected|private)?\s*(?&lt;!end)\s*(?:sub|function)|else)</blockStartMarker>
 	<blockEndMarker>^\s*(?:end|wend|next|else|catch|elseif)(?:\s+|$)</blockEndMarker>
-	
+
+	<lineContinuationMarker indent="2">^(|.*\W)_\s*(|//.*|'.*)$</lineContinuationMarker>
+
 	<symbols>
 		<symbol type="Class">
 			<entryRegEx>^\s*class\s+\w+\s*</entryRegEx>
