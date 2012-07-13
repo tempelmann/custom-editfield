@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<highlightDefinition version="1.1">
+	<!--
+		Created by
+		Arndt Weinmann
+	-->
+	<name>PostgreSQL</name>	
+	
+	<blockStartMarker indent="1">\s*\(\s*$</blockStartMarker>
+	<blockEndMarker>^\s*\)</blockEndMarker>
+	
+	<contexts defaultColor="#0" caseSensitive="no">
+	   <highlightContext name="Comment" highlightColor="#7F0000">
+			<startRegEx>--</startRegEx>
+			<endRegEx>[\n\r]</endRegEx>
+		</highlightContext>
+		<highlightContext name="SQL-Comment" highlightColor="#7F0000">
+			<startRegEx>//</startRegEx>
+			<endRegEx>[\n\r]</endRegEx>
+		</highlightContext>
+		<highlightContext name="square-bracket-command" highlightColor="#FF8000" bold="true">
+			<startRegEx>\[:</startRegEx>
+			<endRegEx>\]</endRegEx>
+		</highlightContext>
+		<highlightContext name="view" highlightColor="#008080" underline="true">
+			<startRegEx>\[view</startRegEx>
+			<endRegEx>\]</endRegEx>
+		</highlightContext>			
+		<highlightContext name="SQL-Comment-multi" highlightColor="#7F0000">
+			<startRegEx>/\*</startRegEx>
+			<endRegEx>\*/</endRegEx>
+		</highlightContext>
+		<highlightContext name="String" highlightColor="#6500FE">
+            		<startRegEx>"</startRegEx>
+			<endRegEx>[^"]*"</endRegEx>
+			<highlightContext name="square-bracket-command-in-string" highlightColor="#FF8000" bold="true">
+				<startRegEx>\[:</startRegEx>
+				<endRegEx>\]</endRegEx>
+			</highlightContext>
+		</highlightContext>
+		<highlightContext name="StringB" highlightColor="#6500FE">
+            			<startRegEx>'</startRegEx>
+			<endRegEx>[^']*'</endRegEx>
+			<highlightContext name="square-bracket-command-in-stringb" highlightColor="#FF8000" bold="true">
+				<startRegEx>\[:</startRegEx>
+				<endRegEx>\]</endRegEx>
+			</highlightContext>
+		</highlightContext>
+		<highlightContext name="Doubles" highlightColor="#006532">
+			<entryRegEx>(?&lt;=[^\w\d]|^)(([0-9]+\.[0-9]*)|([0-9]{11,}))(?=[^\w\d]|$)</entryRegEx>
+		</highlightContext>
+		<highlightContext name="Integers" highlightColor="#326598">
+			<entryRegEx>(?&lt;=[^\w\d]|^)([0-9]{1,10})(?=[^\w\d]|$)</entryRegEx>
+		</highlightContext>        
+		<highlightContext name="redstring" highlightColor="#EE1155" bold="true">
+			<keywords>
+				<string>DELETE</string>
+				<string>UPDATE</string>
+				<string>DROP</string>
+				<string>ALTER</string>
+			</keywords>
+		</highlightContext>        		
+		<highlightContext name="datatypes" highlightColor="#7F1155">
+			<keywords>
+				<string>varchar</string>
+				<string>integer</string>
+				<string>smallint</string>
+				<string>double</string>
+				<string>boolean</string>
+				<string>text</string>
+				<string>blob</string>
+				<string>real</string>
+				<string>datetime</string>
+				<string>dec</string>
+				<string>timestamp</string>
+			</keywords>
+		</highlightContext>
+		<highlightContext name="Keywords" highlightColor="#000000" bold="true">
+			<keywords>
+				<string>abort</string>
+				<string>abs</string>
+				<string>accept</string>
+				<string>access</string>
+				<string>age</string>
+				<string>all</string>
+				<string>and</string>
+				<string>array</string>
+				<string>arraylen</string>
+				<string>as</string>
+				<string>asc</string>
+				<string>assert</string>
+				<string>at</string>
+				<string>avg</string>
+				<string>begin</string>
+				<string>between</string>
+				<string>body</string>
+				<string>by</string>
+				<string>case</string>
+				<string>coalesce</string>
+				<string>columns</string>
+				<string>commit</string>
+				<string>constant</string>
+				<string>count</string>
+				<string>create</string>
+				<string>cursor</string>
+				<string>declare</string>
+				<string>default</string>
+				<string>definition</string>
+				<string>delete</string>
+				<string>desc</string>
+				<string>dispose</string>
+				<string>distinct</string>
+				<string>do</string>
+				<string>else</string>
+				<string>elsif</string>
+				<string>end</string>
+				<string>entry</string>
+				<string>exception</string>
+				<string>exists</string>
+				<string>exit</string>
+				<string>extract</string>
+				<string>false</string>
+				<string>fetch</string>
+				<string>for</string>
+				<string>from</string>
+				<string>function</string>
+				<string>goto</string>
+				<string>group</string>
+				<string>having</string>
+				<string>if</string>
+				<string>in</string>
+				<string>insert</string>
+				<string>intersect</string>
+				<string>interval</string>
+				<string>into</string>
+				<string>is</string>
+				<string>join</string>
+				<string>left</string>
+				<string>like</string>
+				<string>limit</string>
+				<string>loop</string>
+				<string>max</string>
+				<string>min</string>
+				<string>minus</string>
+				<string>mod</string>
+				<string>new</string>
+				<string>not</string>
+				<string>null</string>
+				<string>of</string>
+				<string>offset</string>
+				<string>on</string>
+				<string>open</string>
+				<string>or</string>
+				<string>order</string>
+				<string>out</string>
+				<string>outer</string>
+				<string>overlaps</string>
+				<string>package</string>
+				<string>partition</string>
+				<string>positive</string>
+				<string>pragma</string>
+				<string>primary</string>
+				<string>private</string>
+				<string>procedure</string>
+				<string>public</string>
+				<string>range</string>
+				<string>record</string>
+				<string>rem</string>
+				<string>replace</string>
+				<string>return</string>
+				<string>right</string>
+				<string>rollback</string>				
+				<string>rowtype</string>
+				<string>rowcount</string>
+				<string>run</string>
+				<string>savepoint</string>
+				<string>select</string>
+				<string>set</string>
+				<string>size</string>
+				<string>start</string>
+				<string>stddev</string>
+				<string>sum</string>
+				<string>then</string>
+				<string>to</string>
+				<string>to_char</string>
+				<string>trunc</string>
+				<string>type</string>
+				<string>union</string>
+				<string>unique</string>
+				<string>update</string>
+				<string>use</string>
+				<string>values</string>
+				<string>variance</string>
+				<string>when</string>
+				<string>where</string>
+				<string>while</string>
+				<string>with</string>
+				<string>xor</string>
+			</keywords>
+		</highlightContext>
+	</contexts>
+</highlightDefinition>

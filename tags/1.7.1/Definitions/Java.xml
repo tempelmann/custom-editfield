@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><highlightDefinition version="1.2">	<name>Java</name>	<blockStartMarker indent="1">\{\s*(?:$|//|/\*|\\)|\s*/\*\*?\s*$</blockStartMarker>	<blockEndMarker>^\s*\}|^\s*\*\*?/</blockEndMarker>
+	
+	<symbols>
+		<symbol type="Class">
+			<entryRegEx>^[ \t]*((?:public|private|protected)?[ \t]*class[^{]+)</entryRegEx>
+		</symbol>
+		<symbol type="Method">
+			<entryRegEx>((?:public|private|protected)[ \t]+(?:(?:abstract|static|final|synchronized|native|strictfp)[ \t]+)*(?:[A-Za-z0-9_\-\.&lt;&gt;]+(?:\[\])?[ \t]+)?[A-Za-z0-9_\-]+[ \t]*\([^\)]*\)[ \t]*(?:\s*throws[ \t]*[A-Za-z0-9_\-, \t\.]+)?)\s*(?=\{?)</entryRegEx>
+		</symbol>							
+	</symbols>
+	
+	<placeholders highlightColor="#000000" backgroundColor="#e9effa" bold = "true">&lt;#(.+?)#&gt;</placeholders>
+			<contexts defaultColor="#0" caseSensitive="yes">						<highlightContext name="JavadocComment" highlightColor="#236E25" italic="true">			<startRegEx>/\*\*[\n\r]</startRegEx>			<endRegEx>\*/</endRegEx>		</highlightContext>		<highlightContext name="Comment" highlightColor="#236E25" italic="true">			<startRegEx>/\*</startRegEx>			<endRegEx>\*/</endRegEx>
+			<highlightContext name="todos" highlightColor="#FF0000" bold = "true">
+				<keywords>
+               		<string>todo</string>
+					<string>hack</string>
+				</keywords>
+			</highlightContext>						</highlightContext>		<highlightContext name="SingleComment" highlightColor="#236E25" italic="true">			<startRegEx>//</startRegEx>			<endRegEx>[\n\r]</endRegEx>		</highlightContext>		<highlightContext name="String" highlightColor="#760F15">			<startRegEx>"</startRegEx>			<endRegEx>(((?&lt;!\\)(\\\\)*)|^)"</endRegEx>		</highlightContext>		<highlightContext name="Keywords" highlightColor="#881350" bold="true">			<keywords>				<string>abstract</string>				<string>break</string>				<string>case</string>				<string>catch</string>				<string>class</string>				<string>continue</string>				<string>default</string>				<string>do</string>				<string>else</string>				<string>extends</string>				<string>false</string>				<string>finally</string>				<string>for</string>				<string>goto</string>				<string>if</string>				<string>implements</string>				<string>instanceof</string>				<string>interface</string>				<string>native</string>				<string>new</string>				<string>null</string>				<string>private</string>				<string>protected</string>				<string>public</string>				<string>return</string>				<string>super</string>				<string>strictfp</string>				<string>switch</string>				<string>synchronized</string>				<string>this</string>				<string>throws</string>				<string>throw</string>				<string>transient</string>				<string>true</string>				<string>try</string>				<string>volatile</string>				<string>while</string>				<string>boolean</string>				<string>byte</string>				<string>char</string>				<string>const</string>				<string>double</string>				<string>final</string>				<string>float</string>				<string>int</string>				<string>long</string>				<string>short</string>				<string>static</string>				<string>void</string>			</keywords>		</highlightContext>		<highlightContext name="Numbers" highlightColor="#FF">			<entryRegEx>(?&lt;=[^\w\d]|^)(((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+\-]?[0-9]+)?[fFlL]?)|((([1-9][0-9]*)|0[0-7]*|(0[xX][0-9a-fA-F]+))(([uU][lL]?)|([lL][uU]?))?))(?=[^\w\d]|$)</entryRegEx>		</highlightContext>		<highlightContext name="Characters" highlightColor="#FF">			<entryRegEx>('.')</entryRegEx>		</highlightContext>		<highlightContext name="Functions" highlightColor="#3369">			<entryRegEx>([A-Za-z0-9_]+ *)(?=\()</entryRegEx>		</highlightContext>		
+        <highlightContext name="Preprocessor" highlightColor="#FF" bold="true">			<regExes>
+                <string>(^[ 	]*import([^\n\r])*)</string>
+                <string>(^[ 	]*package([^\n\r])*)</string>			</regExes>		</highlightContext>	</contexts></highlightDefinition>
