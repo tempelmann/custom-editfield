@@ -2,7 +2,7 @@
 <highlightDefinition version="1.2">
 	<name>REALbasic</name>
 
-	<blockStartMarker indent="1">^\s*(?:if.*\sthen\s*(?!.+?)|if\s(?!.*\sthen)|^\s*(protected|private)?\s*(?&lt;!end)\s*(sub|function)|(for|while|select|class|module|try|catch|else|#if|#elseif|#else)\b)</blockStartMarker>
+	<blockStartMarker indent="1">^\s*(?:if\b.*\sthen\b\s*(('|//)|(?!.+?))|if\s(?!.*\sthen\b)|^\s*(protected|private)?\s*(?&lt;!end)\s*(sub|function)|(for|while|select|class|module|try|catch|else|#if|#elseif|#else)\b)</blockStartMarker>
 	<blockEndMarker>^\s*(?:end|wend|next|else|catch|elseif|#else|#elseif|#endif)\b</blockEndMarker>
 
 	<lineContinuationMarker indent="2">^(|.*\W)_\s*(|//.*|'.*)$</lineContinuationMarker>
