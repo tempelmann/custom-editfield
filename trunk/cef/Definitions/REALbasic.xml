@@ -2,7 +2,7 @@
 <highlightDefinition version="1.2">
 	<name>REALbasic</name>
 
-	<blockStartMarker indent="1">^\s*(?:(if|elseif)\b.*\sthen\b\s*(('|//)|(?!.+?))|if\s(?!.*\sthen\b)|^\s*(protected|private)?\s*(?&lt;!end)\s*(sub|function)|(do|for|while|select|class|module|try|catch|else|#if|#elseif|#else)\b)</blockStartMarker>
+	<blockStartMarker indent="1">^\s*(?:(if|elseif)\b.*\sthen\b\s*(('|//)|(?!.+?))|if\s(?!.*\sthen\b)|^\s*(public|protected|private)?\s*(shared)?\s*(?&lt;!end)\s*(sub|function|property)|(do|for|while|select|class|module|try|catch|else|Get|Set|#if|#elseif|#else)\b)</blockStartMarker>
 	<blockEndMarker>^\s*(?:end|wend|next|loop|else|catch|elseif|#else|#elseif|#endif)\b</blockEndMarker>
 
 	<lineContinuationMarker indent="2">^(|.*\W)_\s*(|//.*|'.*)$</lineContinuationMarker>
@@ -12,7 +12,10 @@
 			<entryRegEx>^\s*class\s+\w+\s*</entryRegEx>
 		</symbol>
 		<symbol type="Method">
-			<entryRegEx>^\s*(?:protected|private)?\s*(?&lt;!end)\s*(?:sub|function).+?\([^\)]*\)\s*(?:as\s*\w+\s*)?</entryRegEx>
+			<entryRegEx>^\s*(?:public|protected|private)?\s*(shared)?\s*(?&lt;!end)\s*(?:sub|function).+?\([^\)]*\)\s*(?:as\s*\w+\s*)?</entryRegEx>
+		</symbol>
+		<symbol type="Property">
+			<entryRegEx>^\s*(?:public|protected|private)?\s*(shared)?\s*(?&lt;!end)\s*(property).+</entryRegEx>
 		</symbol>
 		<symbol type="Module">
 			<entryRegEx>^\s*module\s+\w+\s*</entryRegEx>
@@ -113,6 +116,7 @@
 				<string>Finally</string>
 				<string>For</string>
 				<string>Function</string>
+				<string>Get</string>
 				<string>Global</string>
 				<string>GoTo</string>
 				<string>Handles</string>
@@ -150,6 +154,7 @@
 				<string>Return</string>
 				<string>Select</string>
 				<string>Self</string>
+				<string>Set</string>
 				<string>Shared</string>
 				<string>Soft</string>
 				<string>Static</string>
