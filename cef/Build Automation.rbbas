@@ -7,6 +7,13 @@
 				Begin BuildProjectStep Build
 				End
 				Begin IDEScriptBuildStep EnableRetinaSupport , AppliesTo = 0
+					// Adds a key to the Info.plist to enable Retina (HiDPI) resolition.
+					// Works only for Mac Cocoa builds.
+					
+					if CurrentBuildTarget <> 7 then
+					return
+					end
+					
 					const key = "NSHighResolutionCapable"
 					const keyType = "bool"
 					const value = "true"
