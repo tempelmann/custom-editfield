@@ -19,8 +19,9 @@ Protected Class LinesLock
 	#tag Method, Flags = &h21
 		Private Sub Destructor()
 		  // Release the lock
-		  
-		  mLineMgr.linesLock.Leave
+		  if mLineMgr <> nil then
+		    mLineMgr.linesLock.Leave
+		  end if
 		End Sub
 	#tag EndMethod
 
