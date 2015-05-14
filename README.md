@@ -21,3 +21,7 @@ Features:
  * Printing
  * Bookmarks
  * Placeholders
+
+The project runs as a demo, showing off many of its features:
+
+![cef-demo](https://cloud.githubusercontent.com/assets/461920/7630988/929d2024-fa3c-11e4-82bb-c78ba6242609.png)
