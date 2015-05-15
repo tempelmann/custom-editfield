@@ -39,7 +39,7 @@ Inherits Application
 			dim file as FolderItem = GetOpenFolderItem("")
 			if file = nil then Return true
 			
-			dim stream as BinaryStream = file.OpenAsBinaryFile
+			dim stream as BinaryStream = BinaryStream.Open(file)
 			if stream = nil then Return true
 			
 			dim tmp as new MemoryBlock(stream.Length)

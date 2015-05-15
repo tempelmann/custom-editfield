@@ -3926,6 +3926,7 @@ Implements MessageReceiver
 		  
 		  if ignoreRepaint then Return
 		  if Graphics = nil then Return
+		  #pragma warning "What is the point of this check? Can it be done another way?"
 		  
 		  //see if caret is visible
 		  dim ScrollPosition as Integer = self.ScrollPosition
@@ -4099,11 +4100,16 @@ Implements MessageReceiver
 		  
 		  //Modified by Dr. Gerard Hammond to allow the file to be saved even if it's already open by another app.
 		  if toFile.Exists = false then
-		    stream = toFile.CreateBinaryFile(FileType)
-		  else
-		    stream = toFile.OpenAsBinaryFile(true) //open Writeable
-		    stream.Length = 0 ////truncate the file
+		    stream = BinaryStream.Create(toFile)
+		    stream.Close
+		    #if RBVersion < 2014.01 and TargetMacOS
+		      toFile.MacType = fileType
+		    #else
+		      #pragma unused fileType
+		    #endif
 		  end if
+		  stream = BinaryStream.Open(toFile, true)
+		  stream.Length = 0 ////truncate the file
 		  
 		  if stream = nil then Return False
 		  

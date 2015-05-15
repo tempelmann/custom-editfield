@@ -414,7 +414,7 @@ Protected Class HighlightDefinition
 		  if data=nil then Return False
 		  
 		  //read a file...
-		  dim tis as TextInputStream=data.OpenAsTextFile
+		  dim tis as TextInputStream=TextInputStream.Open(data)
 		  if tis=nil then Return False
 		  
 		  dim xml as String=tis.ReadAll(Encodings.UTF8)
@@ -584,7 +584,7 @@ Protected Class HighlightDefinition
 		  
 		  //save definition as an xml
 		  try
-		    dim tos as TextOutputStream = file.CreateTextFile
+		    dim tos as TextOutputStream = TextOutputStream.Create(file)
 		    tos.Write(toXml)
 		    tos.Close
 		    
