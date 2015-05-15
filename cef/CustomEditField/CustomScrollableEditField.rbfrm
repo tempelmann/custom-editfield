@@ -1594,6 +1594,9 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub GotFocus()
+		  #pragma warning "Does this code even run?"
+		  // If not, updateFocusRing and drawFocusRing maybe can be removed?
+		  
 		  self.mHasFocus = true
 		  GotFocus()
 		  self.updateFocusRing
@@ -1601,6 +1604,9 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub LostFocus()
+		  #pragma warning "Does this code even run?"
+		  // If not, updateFocusRing and drawFocusRing maybe can be removed?
+		  
 		  self.mHasFocus = false
 		  self.updateFocusRing
 		  LostFocus()
