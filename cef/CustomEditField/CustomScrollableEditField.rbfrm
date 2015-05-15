@@ -483,10 +483,7 @@ End
 		    
 		    // We have to open a new drawing context because otherwise we might get our drawings clipped
 		    // or we might draw into the wrong window
-		    dim w as Window = me.Window
-		    while w isA ContainerControl
-		      w = ContainerControl(w).Window
-		    wend
+		    dim w as Window = me.TrueWindow
 		    grafPort = w.Graphics.Handle(Graphics.HandleTypeCGrafPtr)
 		    res = QDBeginCGContext (grafPort, context)
 		    if res = 0 then
