@@ -3627,7 +3627,7 @@ Implements MessageReceiver
 		    #pragma unused newIndentLen
 		  #endif
 		  
-		  dim theText as String, moveCaret as Integer
+		  dim theText as String
 		  if ltrimLine then
 		    // Discard leading spaces from current line
 		    theText = newIndentation
