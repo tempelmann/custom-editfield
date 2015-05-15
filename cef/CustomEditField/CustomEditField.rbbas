@@ -4101,7 +4101,7 @@ Implements MessageReceiver
 		  if toFile.Exists = false then
 		    stream = BinaryStream.Create(toFile)
 		    stream.Close
-		    #if RBVersion < 2014.01
+		    #if RBVersion < 2014.01 and TargetMacOS
 		      toFile.MacType = fileType
 		    #else
 		      #pragma unused fileType
