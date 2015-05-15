@@ -351,6 +351,8 @@ End
 	#tag Event
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
 		  #pragma unused g
+		  #pragma unused areas
+		  
 		  self.updateFocusRing
 		End Sub
 	#tag EndEvent

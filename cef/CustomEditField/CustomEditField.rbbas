@@ -385,6 +385,8 @@ Implements MessageReceiver
 
 	#tag Event
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		  #pragma unused areas
+		  
 		  drawContents(g)
 		End Sub
 	#tag EndEvent
