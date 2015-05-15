@@ -19,6 +19,8 @@ Inherits canvas
 
 	#tag Event
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		  #pragma unused areas
+		  
 		  Repaint(g)
 		End Sub
 	#tag EndEvent

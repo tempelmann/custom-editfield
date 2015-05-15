@@ -1940,6 +1940,9 @@ End
 
 	#tag Event
 		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma unused X
+		  #pragma unused Y
+		  
 		  // this is just a cheap trick to cause a redraw for debugging
 		  testField.Redraw
 		  

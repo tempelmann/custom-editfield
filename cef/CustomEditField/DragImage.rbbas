@@ -76,6 +76,7 @@ Protected Module DragImage
 		    'kDragOpaqueTranslucency = 3 0%
 		    
 		    dim OSError as Integer = SetDragImageWithCGImage(d.Handle, theImage, offset, kDragStandardTranslucency)
+		    #pragma unused OSError
 		  #endif
 		  
 		finally // careful: any "return" above will not execute this finally block!
