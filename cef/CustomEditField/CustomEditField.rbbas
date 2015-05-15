@@ -4099,11 +4099,12 @@ Implements MessageReceiver
 		  
 		  //Modified by Dr. Gerard Hammond to allow the file to be saved even if it's already open by another app.
 		  if toFile.Exists = false then
-		    stream = toFile.CreateBinaryFile(FileType)
-		  else
-		    stream = toFile.OpenAsBinaryFile(true) //open Writeable
-		    stream.Length = 0 ////truncate the file
+		    stream = BinaryStream.Create(toFile)
+		    stream.Close
+		    toFile.MacType = fileType
 		  end if
+		  stream = BinaryStream.Open(toFile, true)
+		  stream.Length = 0 ////truncate the file
 		  
 		  if stream = nil then Return False
 		  
