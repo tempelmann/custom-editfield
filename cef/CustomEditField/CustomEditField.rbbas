@@ -3129,7 +3129,10 @@ Implements MessageReceiver
 		  //to handle nested blocks
 		  dim depth as integer
 		  dim char as String
-		  dim maxOffset as Integer = TextStorage.Length
+		  #if DebugBuild
+		    dim maxOffset as Integer = TextStorage.Length
+		    #pragma unused maxOffset
+		  #endif
 		  
 		  dim textToSearch as String = TextStorage.getText(offset + 1, TextStorage.Length - (offset + 1))
 		  textToSearch = textToSearch.ConvertEncoding(EditFieldGlobals.InternalEncoding)
@@ -3619,7 +3622,10 @@ Implements MessageReceiver
 		  dim currIndent as String = currTextUntrimmed.Left(currLeadingSpaces)
 		  
 		  dim newIndentation as String = indentStr (line.indent)
-		  dim newIndentLen as Integer = newIndentation.Len
+		  #if DebugBuild
+		    dim newIndentLen as Integer = newIndentation.Len
+		    #pragma unused newIndentLen
+		  #endif
 		  
 		  dim theText as String, moveCaret as Integer
 		  if ltrimLine then
