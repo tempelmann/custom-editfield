@@ -1356,6 +1356,7 @@ Implements MessageReceiver
 		  #endif
 		  
 		  dim lock as new LinesLock(self) // makes sure we're not updating while LineHighlighter is busy
+		  #pragma unused lock
 		  
 		  self.updateIndentation()
 		  
@@ -2483,6 +2484,7 @@ Implements MessageReceiver
 		  // This internal function performs no undo, no change notification, nor updating of the caret position
 		  
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  if ReadOnly then
 		    break
@@ -3693,6 +3695,7 @@ Implements MessageReceiver
 		  // This method is used internally by the control, and externally by the undo mechanism, you shouldn't use it directly, use instead selstart and seltext.
 		  
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  if ReadOnly then
 		    break
@@ -3876,6 +3879,7 @@ Implements MessageReceiver
 	#tag Method, Flags = &h0
 		Sub Redo()
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  ignoreRepaint = true
 		  UndoMgr.Redo
@@ -4004,6 +4008,7 @@ Implements MessageReceiver
 		  // Removes all leading white space, adding proper indentation (using Tab chars) instead
 		  
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  #if DebugBuild and (EditFieldGlobals.DebugTiming or EditFieldGlobals.DebugIndentation)
 		    dim runtimer as new Debugging.LifeTimer("ReindentText "+str(fromLine)+" to "+str(toLine))
@@ -4337,6 +4342,7 @@ Implements MessageReceiver
 	#tag Method, Flags = &h0
 		Sub Undo()
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  ignoreRepaint = true
 		  UndoMgr.Undo
@@ -4376,6 +4382,7 @@ Implements MessageReceiver
 		Private Sub updateIndentation()
 		  if mKeepEntireTextIndented then
 		    dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		    #pragma unused lock
 		    
 		    dim trimLines as Boolean = not mIndentVisually
 		    dim indentationState as Variant
@@ -5958,6 +5965,7 @@ Implements MessageReceiver
 			  StopHighlighter
 			  
 			  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+			  #pragma unused lock
 			  
 			  loadingDocument = true
 			  ignoreRepaint = true
