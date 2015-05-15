@@ -4101,7 +4101,11 @@ Implements MessageReceiver
 		  if toFile.Exists = false then
 		    stream = BinaryStream.Create(toFile)
 		    stream.Close
-		    toFile.MacType = fileType
+		    #if RBVersion < 2014.01
+		      toFile.MacType = fileType
+		    #else
+		      #pragma unused fileType
+		    #endif
 		  end if
 		  stream = BinaryStream.Open(toFile, true)
 		  stream.Length = 0 ////truncate the file
