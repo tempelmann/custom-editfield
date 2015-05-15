@@ -325,6 +325,7 @@ Protected Class HighlightContext
 		      #if DebugBuild
 		        dim start as Integer = match.SubExpressionStartB(0)
 		        dim wtf as String = subExpression.leftb(start)
+		        #pragma unused wtf
 		      #endif
 		      charPos = subExpression.leftb(match.SubExpressionStartB(0)).len
 		      charPosB = match.SubExpressionStartB(0)
@@ -342,6 +343,7 @@ Protected Class HighlightContext
 		        call entry.Highlight(subExpression, substring, position + startPos, positionB + startPosB, mScanner, tokens, placeholders)
 		        #if DebugBuild
 		          dim asub as String = subExpression.leftb(mScanner.SearchStartPosition)
+		          #pragma unused asub
 		        #endif
 		        startPos = subExpression.leftb(mScanner.SearchStartPosition).len
 		        startPosB = mScanner.SearchStartPosition
