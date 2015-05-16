@@ -5758,6 +5758,10 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mWindowIsClosing As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private OptionForTrailingSuggestion As string
 	#tag EndProperty
 
