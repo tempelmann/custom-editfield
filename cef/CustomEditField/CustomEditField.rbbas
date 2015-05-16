@@ -3925,9 +3925,12 @@ Implements MessageReceiver
 		Sub RedrawCaret()
 		  // called by CaretBlinker to update the text cursor beam
 		  
-		  if ignoreRepaint then Return
-		  if Graphics = nil then Return
-		  #pragma warning "What is the point of this check? Can it be done another way?"
+		  if ignoreRepaint or mWindowIsClosing then
+		    Return
+		  end if
+		  
+		  'if Graphics = nil then Return
+		  '#pragma warning "What is the point of this check? Can it be done another way?"
 		  
 		  //see if caret is visible
 		  dim ScrollPosition as Integer = self.ScrollPosition
