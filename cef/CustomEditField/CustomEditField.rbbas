@@ -29,6 +29,7 @@ Implements MessageReceiver
 		  
 		  if CurrentFocusedField = self then mCurrentFocusedField = nil
 		  
+		  mWindowIsClosing = true
 		  Close
 		End Sub
 	#tag EndEvent
