@@ -968,6 +968,24 @@ End
 		Authors: Thomas Tempelmann and Alex Restrepo
 	#tag EndNote
 
+	#tag Note, Name = Showing a Focus Ring
+		
+		As of v.1.8, to show a Focus Ring around the CustomScrollableEditField, you must set the 
+		UseFocusRing property to True, and you must called UpdateFocusRiing from the 
+		parent Window's Paint event with the parent Window's Graphics property.
+		
+		The Window's Paint event should look something like this:
+		
+		Sub Paint (g As Graphics, areas() As REALbasic.Rect)
+		  //
+		  // Whatever other painting the Window should do.
+		  //
+		  MyCustomScrollableEditField1.UpdateFocusRing(g)
+		  MyCustomScrollableEditField2.UpdateFocusRing(g)
+		  // ... and so on
+		End Sub
+	#tag EndNote
+
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
