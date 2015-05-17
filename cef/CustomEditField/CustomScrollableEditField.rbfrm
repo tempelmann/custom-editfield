@@ -760,8 +760,8 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub updateFocusRing(windowGraphics As Graphics)
+	#tag Method, Flags = &h0
+		Sub UpdateFocusRing(windowGraphics As Graphics)
 		  if me.UseFocusRing and mHasFocus then
 		    mHadFocusRing = me.drawFocusRing(windowGraphics)
 		  elseif mHadFocusRing then
