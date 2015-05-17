@@ -788,7 +788,7 @@ End
 		    mHadFocusRing = me.drawFocusRing(windowGraphics)
 		  elseif mHadFocusRing then
 		    // We need to make sure the focus ring gets erased.
-		    Window.RefreshRect me.Left-8, me.Top-8, me.Width+16, me.Height+16
+		    'Window.RefreshRect me.Left-8, me.Top-8, me.Width+16, me.Height+16
 		    mHadFocusRing = false
 		  end
 		End Sub
