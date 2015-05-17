@@ -461,7 +461,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function drawFocusRing(ringVisible as Boolean = true) As Boolean
+		Private Function drawFocusRing(ringVisible as Boolean = true, windowGraphics As Graphics) As Boolean
 		  #if TargetMacOS
 		    
 		    declare function QDBeginCGContext lib "Carbon" (port as Int32, ByRef contextPtr as Int32) as Integer
@@ -483,8 +483,7 @@ End
 		    
 		    // We have to open a new drawing context because otherwise we might get our drawings clipped
 		    // or we might draw into the wrong window
-		    dim w as Window = me.TrueWindow
-		    grafPort = w.Graphics.Handle(Graphics.HandleTypeCGrafPtr)
+		    grafPort = windowGraphics.Handle(windowGraphics.HandleTypeCGrafPtr)
 		    res = QDBeginCGContext (grafPort, context)
 		    if res = 0 then
 		      // Now draw the ring
@@ -763,9 +762,9 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub updateFocusRing()
+		Private Sub updateFocusRing(windowGraphics As Graphics)
 		  if me.UseFocusRing and mHasFocus then
-		    mHadFocusRing = me.drawFocusRing
+		    mHadFocusRing = me.drawFocusRing(windowGraphics)
 		  elseif mHadFocusRing then
 		    // We need to make sure the focus ring gets erased.
 		    Window.RefreshRect me.Left-8, me.Top-8, me.Width+16, me.Height+16
