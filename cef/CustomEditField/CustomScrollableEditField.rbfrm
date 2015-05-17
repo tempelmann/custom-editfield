@@ -597,6 +597,28 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		 Shared Sub PaintFocusRings(parentWindow As Window, parentGraphics As Graphics)
+		  //
+		  // Should be called by the parent window's Paint event wherever a focus ring is desired
+		  //
+		  //  CustomScrollableEditField.PaintFocusRings(self, g)
+		  //
+		  
+		  //
+		  // Find all the CustomScrollableEditField controls and update them
+		  //
+		  dim lastControlIndex as integer = parentWindow.ControlCount - 1
+		  for controlIndex as integer = 0 to lastControlIndex
+		    dim cntrl as Control = parentWindow.Control(controlIndex)
+		    if cntrl IsA CustomScrollableEditField then
+		      dim cfe as CustomScrollableEditField = CustomScrollableEditField(cntrl)
+		      cfe.updateFocusRing(parentGraphics)
+		    end if
+		  next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Paste()
 		  contentField.Paste
 		End Sub
