@@ -1349,7 +1349,7 @@ Implements MessageReceiver
 		Private Sub drawContents(gr as graphics)
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  #if DebugBuild and EditFieldGlobals.DebugIndentation
@@ -2711,7 +2711,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //oh yes... this can be a lot better, for starters we can get the screen width by reading all the word lengths in this line... I guess I'm just lazy.
@@ -3110,7 +3110,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //find the next block char, for the given "forChar" char
@@ -3210,7 +3210,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  xPos = xPos - line.VisualIndent(self.IndentVisually)
@@ -3302,7 +3302,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if not hasFocus and DragSource = nil then Return
@@ -3381,7 +3381,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //find previous block char
@@ -3814,7 +3814,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  // Part of the MessageReceiver interface.
@@ -4078,7 +4078,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  Dim characters() as String = Split( s, "" )
@@ -4466,7 +4466,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim tmp as Picture = tmpPicture
