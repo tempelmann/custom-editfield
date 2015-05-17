@@ -353,7 +353,6 @@ End
 		  #pragma unused g
 		  #pragma unused areas
 		  
-		  self.updateFocusRing
 		End Sub
 	#tag EndEvent
 
