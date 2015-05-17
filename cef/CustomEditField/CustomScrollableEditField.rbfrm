@@ -1616,13 +1616,28 @@ End
 		Sub GotFocus()
 		  self.mHasFocus = true
 		  GotFocus()
-		  self.updateFocusRing
+		  #if RBVersion < 2014.01
+		    //
+		    // I don't really know when Invalidate was introduced
+		    //
+		    self.TrueWindow.Refresh
+		  #else
+		    self.TrueWindow.Invalidate
+		  #endif
+		  
 		End Sub
 	#tag EndEvent
 	#tag Event
 		Sub LostFocus()
 		  self.mHasFocus = false
-		  self.updateFocusRing
+		  #if RBVersion < 2014.01
+		    //
+		    // I don't really know when Invalidate was introduced
+		    //
+		    self.TrueWindow.Refresh
+		  #else
+		    self.TrueWindow.Invalidate
+		  #endif
 		  LostFocus()
 		End Sub
 	#tag EndEvent
