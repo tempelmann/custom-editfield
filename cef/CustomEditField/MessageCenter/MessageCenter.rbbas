@@ -55,7 +55,7 @@ Protected Module MessageCenter
 		Protected Sub sendMessage(theMessage as Message)
 		  #pragma DisableBackgroundTasks
 		  #pragma DisableBoundsChecking
-		  #pragma DisableAutoWaitCursor
+		  
 		  
 		  if messages = nil then return //no receivers
 		  

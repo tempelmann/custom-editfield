@@ -23,7 +23,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //clear the calculation caches
@@ -86,7 +86,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim text as String = TextStorage.getText(offset, length)
@@ -152,7 +152,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim prevLineEnding as String = lineEnding
@@ -242,7 +242,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if Count = 0 then Return -1
@@ -290,7 +290,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  for i as Integer = 0 to UBound(lines)
@@ -377,7 +377,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if invisibleLines = 0 then Return linesNeeded
@@ -408,7 +408,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if invisibleLines = 0 then Return lineNumber
@@ -530,7 +530,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim testLine as TextLine
@@ -575,7 +575,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if invisibleLines = 0 then Return fromLine
@@ -633,7 +633,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim testLine as TextLine
@@ -678,7 +678,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if invisibleLines = 0 then Return fromLine
@@ -710,7 +710,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  // Deletes a portion of the array.
@@ -756,7 +756,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //look for symbols in the lines that are being removed. if found, signal the editfield to remove such symbols from its symbol table.
@@ -798,7 +798,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim lineNumber as Integer = getLineNumberForOffset(offset, length)
@@ -1038,7 +1038,7 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //expand all foldings

@@ -187,7 +187,7 @@ Protected Class HighlightDefinition
 	#tag Method, Flags = &h0
 		Function Highlight(text as string, tokens() as textsegment, placeholders() as textplaceholder, forceMatch as highlightContext = nil) As highlightcontext
 		  #pragma DisableBackgroundTasks
-		  #pragma DisableAutoWaitCursor
+		  
 		  
 		  #if DebugBuild and EditFieldGlobals.DebugTiming
 		    dim runtimer as new Debugging.AccumulationTimer(CurrentMethodName)
