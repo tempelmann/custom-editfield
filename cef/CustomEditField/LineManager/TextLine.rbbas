@@ -107,7 +107,7 @@ Inherits TextSegment
 	#tag Method, Flags = &h0
 		Function Highlight(definition as highlightdefinition, storage as gapBuffer, forcedContext as highlightcontext = nil, defaultColor as color = &c0) As highlightcontext
 		  #pragma DisableBackgroundTasks
-		  #pragma DisableAutoWaitCursor
+		  
 		  
 		  ReDim Words(-1)
 		  ReDim placeholders(-1)
@@ -150,7 +150,7 @@ Inherits TextSegment
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim word as TextSegment
@@ -187,7 +187,7 @@ Inherits TextSegment
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //if there are no words in this line, we need to at least quick-parse it so we can display it.
@@ -434,7 +434,7 @@ Inherits TextSegment
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim ox, lines as Integer
@@ -597,7 +597,7 @@ Inherits TextSegment
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //gets the text to be displayed by this line.

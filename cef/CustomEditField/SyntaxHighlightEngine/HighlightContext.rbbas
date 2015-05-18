@@ -244,7 +244,7 @@ Protected Class HighlightContext
 	#tag Method, Flags = &h0
 		Function Highlight(text as string, subExpression as string, position as integer, positionB as integer, scanner as regex, tokens() as textsegment, placeholders() as TextPlaceholder) As boolean
 		  #pragma DisableBackgroundTasks
-		  #pragma DisableAutoWaitCursor
+		  
 		  
 		  //Highlight this context
 		  dim match as RegExMatch

@@ -12,7 +12,7 @@ Implements IBufferStorage
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //indexes and length all have to be multiplied by BytesPerChar

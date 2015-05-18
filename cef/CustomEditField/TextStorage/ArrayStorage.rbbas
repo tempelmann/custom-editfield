@@ -12,7 +12,7 @@ Implements IBufferStorage
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if length = 0 then Return
@@ -47,7 +47,7 @@ Implements IBufferStorage
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if length = 0 then Return ""
@@ -76,7 +76,7 @@ Implements IBufferStorage
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if length = 0 then Return

@@ -29,6 +29,7 @@ Implements MessageReceiver
 		  
 		  if CurrentFocusedField = self then mCurrentFocusedField = nil
 		  
+		  mWindowIsClosing = true
 		  Close
 		End Sub
 	#tag EndEvent
@@ -1348,7 +1349,7 @@ Implements MessageReceiver
 		Private Sub drawContents(gr as graphics)
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  #if DebugBuild and EditFieldGlobals.DebugIndentation
@@ -2710,7 +2711,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //oh yes... this can be a lot better, for starters we can get the screen width by reading all the word lengths in this line... I guess I'm just lazy.
@@ -3109,7 +3110,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //find the next block char, for the given "forChar" char
@@ -3209,7 +3210,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  xPos = xPos - line.VisualIndent(self.IndentVisually)
@@ -3301,7 +3302,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if not hasFocus and DragSource = nil then Return
@@ -3380,7 +3381,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //find previous block char
@@ -3813,7 +3814,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  // Part of the MessageReceiver interface.
@@ -3924,8 +3925,12 @@ Implements MessageReceiver
 		Sub RedrawCaret()
 		  // called by CaretBlinker to update the text cursor beam
 		  
-		  if ignoreRepaint then Return
-		  if Graphics = nil then Return
+		  if ignoreRepaint or mWindowIsClosing then
+		    Return
+		  end if
+		  
+		  'if Graphics = nil then Return
+		  '#pragma warning "What is the point of this check? Can it be done another way?"
 		  
 		  //see if caret is visible
 		  dim ScrollPosition as Integer = self.ScrollPosition
@@ -4073,7 +4078,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  Dim characters() as String = Split( s, "" )
@@ -4099,11 +4104,16 @@ Implements MessageReceiver
 		  
 		  //Modified by Dr. Gerard Hammond to allow the file to be saved even if it's already open by another app.
 		  if toFile.Exists = false then
-		    stream = toFile.CreateBinaryFile(FileType)
-		  else
-		    stream = toFile.OpenAsBinaryFile(true) //open Writeable
-		    stream.Length = 0 ////truncate the file
+		    stream = BinaryStream.Create(toFile)
+		    stream.Close
+		    #if RBVersion < 2014.01 and TargetMacOS
+		      toFile.MacType = fileType
+		    #else
+		      #pragma unused fileType
+		    #endif
 		  end if
+		  stream = BinaryStream.Open(toFile, true)
+		  stream.Length = 0 ////truncate the file
 		  
 		  if stream = nil then Return False
 		  
@@ -4456,7 +4466,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim tmp as Picture = tmpPicture
@@ -5749,6 +5759,10 @@ Implements MessageReceiver
 
 	#tag Property, Flags = &h21
 		Private mVisibleLineRange As DataRange
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mWindowIsClosing As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

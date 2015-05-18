@@ -353,7 +353,6 @@ End
 		  #pragma unused g
 		  #pragma unused areas
 		  
-		  self.updateFocusRing
 		End Sub
 	#tag EndEvent
 
@@ -461,7 +460,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function drawFocusRing(ringVisible as Boolean = true) As Boolean
+		Private Function drawFocusRing(ringVisible as Boolean = true, windowGraphics As Graphics) As Boolean
 		  #if TargetMacOS
 		    
 		    declare function QDBeginCGContext lib "Carbon" (port as Int32, ByRef contextPtr as Int32) as Integer
@@ -483,11 +482,7 @@ End
 		    
 		    // We have to open a new drawing context because otherwise we might get our drawings clipped
 		    // or we might draw into the wrong window
-		    dim w as Window = me.Window
-		    while w isA ContainerControl
-		      w = ContainerControl(w).Window
-		    wend
-		    grafPort = w.Graphics.Handle(Graphics.HandleTypeCGrafPtr)
+		    grafPort = windowGraphics.Handle(windowGraphics.HandleTypeCGrafPtr)
 		    res = QDBeginCGContext (grafPort, context)
 		    if res = 0 then
 		      // Now draw the ring
@@ -765,13 +760,13 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub updateFocusRing()
+	#tag Method, Flags = &h0
+		Sub UpdateFocusRing(windowGraphics As Graphics)
 		  if me.UseFocusRing and mHasFocus then
-		    mHadFocusRing = me.drawFocusRing
+		    mHadFocusRing = me.drawFocusRing(windowGraphics)
 		  elseif mHadFocusRing then
 		    // We need to make sure the focus ring gets erased.
-		    Window.RefreshRect me.Left-8, me.Top-8, me.Width+16, me.Height+16
+		    'Window.RefreshRect me.Left-8, me.Top-8, me.Width+16, me.Height+16
 		    mHadFocusRing = false
 		  end
 		End Sub
@@ -971,6 +966,24 @@ End
 		property values in code. See the "SetDefaults" method for that.
 		
 		Authors: Thomas Tempelmann and Alex Restrepo
+	#tag EndNote
+
+	#tag Note, Name = Showing a Focus Ring
+		
+		As of v.1.8, to show a Focus Ring around the CustomScrollableEditField, you must set the 
+		UseFocusRing property to True, and you must called UpdateFocusRiing from the 
+		parent Window's Paint event with the parent Window's Graphics property.
+		
+		The Window's Paint event should look something like this:
+		
+		Sub Paint (g As Graphics, areas() As REALbasic.Rect)
+		  //
+		  // Whatever other painting the Window should do.
+		  //
+		  MyCustomScrollableEditField1.UpdateFocusRing(g)
+		  MyCustomScrollableEditField2.UpdateFocusRing(g)
+		  // ... and so on
+		End Sub
 	#tag EndNote
 
 
@@ -1599,13 +1612,28 @@ End
 		Sub GotFocus()
 		  self.mHasFocus = true
 		  GotFocus()
-		  self.updateFocusRing
+		  #if RBVersion < 2014.01
+		    //
+		    // I don't really know when Invalidate was introduced
+		    //
+		    self.TrueWindow.Refresh
+		  #else
+		    self.TrueWindow.Invalidate
+		  #endif
+		  
 		End Sub
 	#tag EndEvent
 	#tag Event
 		Sub LostFocus()
 		  self.mHasFocus = false
-		  self.updateFocusRing
+		  #if RBVersion < 2014.01
+		    //
+		    // I don't really know when Invalidate was introduced
+		    //
+		    self.TrueWindow.Refresh
+		  #else
+		    self.TrueWindow.Invalidate
+		  #endif
 		  LostFocus()
 		End Sub
 	#tag EndEvent
