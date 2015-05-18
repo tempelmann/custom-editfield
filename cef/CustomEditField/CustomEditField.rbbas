@@ -29,6 +29,7 @@ Implements MessageReceiver
 		  
 		  if CurrentFocusedField = self then mCurrentFocusedField = nil
 		  
+		  mWindowIsClosing = true
 		  Close
 		End Sub
 	#tag EndEvent
@@ -385,6 +386,8 @@ Implements MessageReceiver
 
 	#tag Event
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		  #pragma unused areas
+		  
 		  drawContents(g)
 		End Sub
 	#tag EndEvent
@@ -1346,7 +1349,7 @@ Implements MessageReceiver
 		Private Sub drawContents(gr as graphics)
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  #if DebugBuild and EditFieldGlobals.DebugIndentation
@@ -1354,6 +1357,7 @@ Implements MessageReceiver
 		  #endif
 		  
 		  dim lock as new LinesLock(self) // makes sure we're not updating while LineHighlighter is busy
+		  #pragma unused lock
 		  
 		  self.updateIndentation()
 		  
@@ -2423,6 +2427,8 @@ Implements MessageReceiver
 
 	#tag Method, Flags = &h21
 		Private Sub HighlightNow(caller as Timer)
+		  #pragma unused caller
+		  
 		  if mHighlighter = nil or mHighlighter.State = Thread.NotRunning then
 		    highlighterTask(true).Run
 		  end if
@@ -2479,6 +2485,7 @@ Implements MessageReceiver
 		  // This internal function performs no undo, no change notification, nor updating of the caret position
 		  
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  if ReadOnly then
 		    break
@@ -2704,7 +2711,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //oh yes... this can be a lot better, for starters we can get the screen width by reading all the word lengths in this line... I guess I'm just lazy.
@@ -3103,7 +3110,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //find the next block char, for the given "forChar" char
@@ -3123,7 +3130,10 @@ Implements MessageReceiver
 		  //to handle nested blocks
 		  dim depth as integer
 		  dim char as String
-		  dim maxOffset as Integer = TextStorage.Length
+		  #if DebugBuild
+		    dim maxOffset as Integer = TextStorage.Length
+		    #pragma unused maxOffset
+		  #endif
 		  
 		  dim textToSearch as String = TextStorage.getText(offset + 1, TextStorage.Length - (offset + 1))
 		  textToSearch = textToSearch.ConvertEncoding(EditFieldGlobals.InternalEncoding)
@@ -3200,7 +3210,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  xPos = xPos - line.VisualIndent(self.IndentVisually)
@@ -3292,7 +3302,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if not hasFocus and DragSource = nil then Return
@@ -3371,7 +3381,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  //find previous block char
@@ -3613,9 +3623,12 @@ Implements MessageReceiver
 		  dim currIndent as String = currTextUntrimmed.Left(currLeadingSpaces)
 		  
 		  dim newIndentation as String = indentStr (line.indent)
-		  dim newIndentLen as Integer = newIndentation.Len
+		  #if DebugBuild
+		    dim newIndentLen as Integer = newIndentation.Len
+		    #pragma unused newIndentLen
+		  #endif
 		  
-		  dim theText as String, moveCaret as Integer
+		  dim theText as String
 		  if ltrimLine then
 		    // Discard leading spaces from current line
 		    theText = newIndentation
@@ -3652,6 +3665,11 @@ Implements MessageReceiver
 		  // Invokes Canvas Paint
 		  
 		  #if TargetMacOS
+		    #pragma unused x
+		    #pragma unused y
+		    #pragma unused width
+		    #pragma unused height
+		    
 		    super.Invalidate false ' x,  y, width, height
 		    
 		  #elseif TargetWin32
@@ -3667,6 +3685,11 @@ Implements MessageReceiver
 		    InvalidateRect( me.Handle, r, false )
 		    UpdateWindow( me.Window.Handle )
 		  #else
+		    #pragma unused x
+		    #pragma unused y
+		    #pragma unused width
+		    #pragma unused height
+		    
 		    // Draw directly, without the Paint event
 		    drawContents(Graphics)
 		  #endif
@@ -3679,6 +3702,7 @@ Implements MessageReceiver
 		  // This method is used internally by the control, and externally by the undo mechanism, you shouldn't use it directly, use instead selstart and seltext.
 		  
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  if ReadOnly then
 		    break
@@ -3790,7 +3814,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  // Part of the MessageReceiver interface.
@@ -3862,6 +3886,7 @@ Implements MessageReceiver
 	#tag Method, Flags = &h0
 		Sub Redo()
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  ignoreRepaint = true
 		  UndoMgr.Redo
@@ -3900,8 +3925,12 @@ Implements MessageReceiver
 		Sub RedrawCaret()
 		  // called by CaretBlinker to update the text cursor beam
 		  
-		  if ignoreRepaint then Return
-		  if Graphics = nil then Return
+		  if ignoreRepaint or mWindowIsClosing then
+		    Return
+		  end if
+		  
+		  'if Graphics = nil then Return
+		  '#pragma warning "What is the point of this check? Can it be done another way?"
 		  
 		  //see if caret is visible
 		  dim ScrollPosition as Integer = self.ScrollPosition
@@ -3919,6 +3948,8 @@ Implements MessageReceiver
 
 	#tag Method, Flags = &h21
 		Private Sub redrawNow(caller as Timer)
+		  #pragma unused caller
+		  
 		  self.Invalidate
 		End Sub
 	#tag EndMethod
@@ -3941,6 +3972,8 @@ Implements MessageReceiver
 
 	#tag Method, Flags = &h21
 		Private Sub Refresh(eraseBackground As Boolean = True)
+		  #pragma unused eraseBackground
+		  
 		  // We force the user to call Redraw instead of Refresh because
 		  // we don't want the user to be able to accidentally cause an
 		  // entire screen erase.  So we override Refresh by making it
@@ -3951,6 +3984,12 @@ Implements MessageReceiver
 
 	#tag Method, Flags = &h21
 		Private Sub RefreshRect(x As Integer, y As Integer, width As Integer, height As Integer, eraseBackground As Boolean = True)
+		  #pragma unused x
+		  #pragma unused y
+		  #pragma unused width
+		  #pragma unused height
+		  #pragma unused eraseBackground
+		  
 		  // We force the user to call Redraw instead of Refresh because
 		  // we don't want the user to be able to accidentally cause an
 		  // entire screen erase.  So we override Refresh by making it
@@ -3980,6 +4019,7 @@ Implements MessageReceiver
 		  // Removes all leading white space, adding proper indentation (using Tab chars) instead
 		  
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  #if DebugBuild and (EditFieldGlobals.DebugTiming or EditFieldGlobals.DebugIndentation)
 		    dim runtimer as new Debugging.LifeTimer("ReindentText "+str(fromLine)+" to "+str(toLine))
@@ -4038,7 +4078,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  Dim characters() as String = Split( s, "" )
@@ -4064,11 +4104,16 @@ Implements MessageReceiver
 		  
 		  //Modified by Dr. Gerard Hammond to allow the file to be saved even if it's already open by another app.
 		  if toFile.Exists = false then
-		    stream = toFile.CreateBinaryFile(FileType)
-		  else
-		    stream = toFile.OpenAsBinaryFile(true) //open Writeable
-		    stream.Length = 0 ////truncate the file
+		    stream = BinaryStream.Create(toFile)
+		    stream.Close
+		    #if RBVersion < 2014.01 and TargetMacOS
+		      toFile.MacType = fileType
+		    #else
+		      #pragma unused fileType
+		    #endif
 		  end if
+		  stream = BinaryStream.Open(toFile, true)
+		  stream.Length = 0 ////truncate the file
 		  
 		  if stream = nil then Return False
 		  
@@ -4313,6 +4358,7 @@ Implements MessageReceiver
 	#tag Method, Flags = &h0
 		Sub Undo()
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
 		  
 		  ignoreRepaint = true
 		  UndoMgr.Undo
@@ -4352,6 +4398,7 @@ Implements MessageReceiver
 		Private Sub updateIndentation()
 		  if mKeepEntireTextIndented then
 		    dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		    #pragma unused lock
 		    
 		    dim trimLines as Boolean = not mIndentVisually
 		    dim indentationState as Variant
@@ -4419,7 +4466,7 @@ Implements MessageReceiver
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  dim tmp as Picture = tmpPicture
@@ -5715,6 +5762,10 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mWindowIsClosing As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private OptionForTrailingSuggestion As string
 	#tag EndProperty
 
@@ -5934,6 +5985,7 @@ Implements MessageReceiver
 			  StopHighlighter
 			  
 			  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+			  #pragma unused lock
 			  
 			  loadingDocument = true
 			  ignoreRepaint = true

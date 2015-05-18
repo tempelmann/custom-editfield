@@ -1940,6 +1940,9 @@ End
 
 	#tag Event
 		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		  #pragma unused X
+		  #pragma unused Y
+		  
 		  // this is just a cheap trick to cause a redraw for debugging
 		  testField.Redraw
 		  
@@ -2372,25 +2375,21 @@ End
 		  // Added 11/15/2001 by Jarvis Badgley
 		  // Modified 2/3/2002 by Kevin Ballard
 		  
-		  #if Target68k then
-		    // No 68k code
-		  #else
-		    dim w as Window=self
-		    Dim osErr As Integer
-		    dim v as variant
+		  dim w as Window=self
+		  Dim osErr As Integer
+		  dim v as variant
+		  
+		  #if TargetMacOS then
+		    #if TargetCarbon or TargetCocoa then
+		      Declare Function SetWindowModified Lib "Carbon" (window As WindowPtr, modified As Integer) As Integer
+		    #else
+		      Declare Function SetWindowModified Lib "WindowsLib" (window As WindowPtr, modified As Integer) As Integer
+		    #endif // TargetCarbon
 		    
-		    #if TargetMacOS then
-		      #if TargetCarbon or TargetCocoa then
-		        Declare Function SetWindowModified Lib "Carbon" (window As WindowPtr, modified As Integer) As Integer
-		      #else
-		        Declare Function SetWindowModified Lib "WindowsLib" (window As WindowPtr, modified As Integer) As Integer
-		      #endif // TargetCarbon
-		      
-		      v=b
-		      osErr=SetWindowModified(w,v)
-		    #endif // TargetMacOS
-		    
-		  #endif // Target68k
+		    v=b
+		    osErr=SetWindowModified(w,v)
+		  #endif // TargetMacOS
+		  
 		End Sub
 	#tag EndMethod
 

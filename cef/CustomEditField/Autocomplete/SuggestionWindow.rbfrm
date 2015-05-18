@@ -169,8 +169,10 @@ End
 		  dim option as String
 		  for each option in options
 		    optionList.AddRow option
-		    if self.Graphics.StringWidth(option) > self.Width then  //auto-expand to fit the options. Thanks to Dr Gerard Hammond
-		      self.Width = self.Graphics.StringWidth(option)  + 10
+		    static p as new Picture(1, 1, 32)
+		    dim neededWidth as integer = p.Graphics.StringWidth(option)
+		    if neededWidth > self.Width then  //auto-expand to fit the options. Thanks to Dr Gerard Hammond
+		      self.Width = neededWidth + 10
 		    end
 		  next
 		  if optionList.ListCount > 0 then _

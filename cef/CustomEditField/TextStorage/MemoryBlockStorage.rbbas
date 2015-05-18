@@ -21,7 +21,7 @@ Implements IBufferStorage
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    #pragma DisableAutoWaitCursor
+		    
 		  #endif
 		  
 		  if from.size = 0 or length = 0 then Return //nuthin' to copy

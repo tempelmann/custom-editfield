@@ -14,6 +14,8 @@ Inherits Canvas
 
 	#tag Event
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		  #pragma unused areas
+		  
 		  g.ForeColor = SelectedColor
 		  g.fillRect 0,0,g.Width,g.Height
 		  
