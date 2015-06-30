@@ -92,6 +92,7 @@
 				<string>#If</string>
 				<string>#Pragma</string>
 				<string>#Tag</string>
+				<string>AddHandler</string>
 				<string>AddressOf</string>
 				<string>And</string>
 				<string>Array</string>
@@ -159,6 +160,7 @@
 				<string>RaiseEvent</string>
 				<string>Redim</string>
 				<string>Rem</string>
+				<string>RemoveHandler</string>
 				<string>Return</string>
 				<string>Select</string>
 				<string>Self</string>
