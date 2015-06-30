@@ -105,6 +105,7 @@
 				<string>Class</string>
 				<string>Const</string>
 				<string>Continue</string>
+				<string>CType</string>
 				<string>Declare</string>
 				<string>Delegate</string>
 				<string>Dim</string>
