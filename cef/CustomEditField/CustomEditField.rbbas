@@ -3545,6 +3545,11 @@ Implements MessageReceiver
 		    // use indentation of previous block start
 		    
 		    dim blockStartIdx as Integer = lines.previousBlockStartLine(lineIndex)
+		    if blockStartIdx < 0 then
+		      // no previous block opening found - use previous line's indent
+		      blockStartIdx = max (0, lineIndex-1)
+		    else
+		    end if
 		    previousLine = lines.getLine(blockStartIdx)
 		    
 		    // reset the indentation
