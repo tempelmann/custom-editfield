@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<highlightDefinition version="1.3">
+	<name>XojoScript</name>
+
+<!-- MODULE block -->
+	<blockStartMarker indent="1">^\s*(protected\b|private\b)?\s*module\b</blockStartMarker>
+	<blockEndMarker>^\s*end\s+module\b</blockEndMarker>
+
+<!-- CLASS block -->
+	<blockStartMarker indent="1">^\s*(protected\b|private\b)?\s*class\b</blockStartMarker>
+	<blockEndMarker>^\s*end\s+class\b</blockEndMarker>
+
+<!-- WHILE block -->
+	<blockStartMarker indent="1">^\s*while\b</blockStartMarker>
+	<blockEndMarker>^\s*wend</blockEndMarker>
+
+<!-- DO block -->
+	<blockStartMarker indent="1">^\s*do\b</blockStartMarker>
+	<blockEndMarker>^\s*loop\b</blockEndMarker>
+
+<!-- FOR block -->
+	<blockStartMarker indent="1">^\s*for\b</blockStartMarker>
+	<blockEndMarker>^\s*next\b</blockEndMarker>
+
+<!-- SUB block -->
+	<blockStartMarker indent="1">^\s*((public|protected|private)\s+)?(shared\s+)?sub\b</blockStartMarker>
+	<blockEndMarker>^\s*end\s+sub\b</blockEndMarker>
+
+<!-- FUNCTION block -->
+	<blockStartMarker indent="1">^\s*((public|protected|private)\s+)?(shared\s+)?function\b</blockStartMarker>
+	<blockEndMarker>^\s*end\s+function\b</blockEndMarker>
+
+<!-- IF block -->
+	<blockStartMarker indent="1">^\s*(?:(if|elseif)\b.*\sthen\b\s*(('|//)|(?!.+?))|if\s(?!.*\sthen\b))</blockStartMarker>
+<blockEndMarker>^\s*end\b(?:\s*(?://.*|'.*|REM\b.*)?$|\s+if\b)</blockEndMarker>
+
+<!-- SELECT block -->
+	<blockStartMarker indent="1">^\s*select</blockStartMarker>
+	<blockEndMarker>^\s*end\b(?:\s*(?://.*|'.*|REM\b.*)?$|\s+select\b)</blockEndMarker>
+
+<!-- everything else -->
+	<blockStartMarker indent="1">^\s*(?:try|catch|else|Get|Set|#if|#elseif|#else)\b</blockStartMarker>
+	<blockEndMarker>^\s*(?:catch|#else|#elseif|#endif)\b</blockEndMarker>
+
+	<!-- these prevent subs and functions inside an interface from being indented: -->
+	<blockStartMarker indent="1" newstate="inside_interface">^\s*(protected\b|private\b)?\s*interface\b</blockStartMarker>
+	<blockEndMarker condition="inside_interface" newstate="">^\s*end\s+interface\b</blockEndMarker>
+
+	<lineContinuationMarker indent="2">^(|.*\W)_\s*(|//.*|'.*)$</lineContinuationMarker>
+
+	<symbols> <!-- these are used to identify declared symbols that are useful for natigation inside larger source file -->
+		<symbol type="Method">
+			<entryRegEx>^\s*(?:public|protected|private)?\b\s*(shared\b)?\s*(?&lt;!end\b)\s*(?:sub|function)\b.+?\([^\)]*\)\s*(?:as\b\s*\w+\s*)?</entryRegEx>
+		</symbol>
+		<symbol type="Property">
+			<entryRegEx>^\s*(?:public|protected|private)?\b\s*(shared\b)?\s*(?&lt;!end\b)\s*(property\b).+</entryRegEx>
+		</symbol>
+		<symbol type="Class">
+			<entryRegEx>^\s*(?:protected\b|private\b)?\s*class\s+\w+\s*</entryRegEx>
+		</symbol>
+		<symbol type="Module">
+			<entryRegEx>^\s*(?:protected\b|private\b)?\s*module\s+\w+\s*</entryRegEx>
+		</symbol>		
+		<symbol type="Interface">
+			<entryRegEx>^\s*(?:protected\b|private\b)?\s*interface\s+\w+\s*</entryRegEx>
+		</symbol>		
+	</symbols>
+	
+	<contexts defaultColor="#000000" caseSensitive="no">		
+        <highlightContext name="Doubles" highlightColor="#006532">
+            <entryRegEx>(?&lt;=[^\w\d]|^)(([0-9]+\.[0-9]*)|([0-9]{11,}))(?=[^\w\d]|$)</entryRegEx>
+        </highlightContext>    	
+        
+        <highlightContext name="Integers" highlightColor="#326598">
+            <entryRegEx>(?&lt;=[^\w\d]|^)([0-9]{1,10})(?=[^\w\d]|$)</entryRegEx>
+        </highlightContext>
+
+		<highlightContext name="PreProcessor" highlightColor="#0000FF">
+            <entryRegEx>(#\w+)</entryRegEx>
+        </highlightContext>        
+		
+		<highlightContext name="Comment" highlightColor="#7F0000" italic="true">
+			<startRegEx>'</startRegEx>
+			<endRegEx>[\n\r]</endRegEx>
+		</highlightContext>
+		
+		<highlightContext name="C-Comment" highlightColor="#7F0000" italic="true">
+			<startRegEx>//</startRegEx>
+			<endRegEx>[\n\r]</endRegEx>
+		</highlightContext>
+		
+		<highlightContext name="REM-Comment" highlightColor="#7F0000" italic="true">
+			<startRegEx>^\s*rem\s</startRegEx>
+			<endRegEx>[\n\r]</endRegEx>
+		</highlightContext>
+		
+		<highlightContext name="String" highlightColor="#6500FE">
+			<startRegEx>"</startRegEx>
+			<endRegEx>[^"\n\r]*["\n\r]</endRegEx>
+		</highlightContext>
+
+        <highlightContext name="BasicTypes" highlightColor="#0000FF" bold="true">
+            <keywords>
+				<string>Boolean</string>
+				<string>Color</string>
+				<string>Double</string>
+				<string>Integer</string>
+				<string>UInteger</string>
+				<string>Int8</string>
+				<string>UInt8</string>
+				<string>Int16</string>
+				<string>UInt16</string>
+				<string>Int32</string>
+				<string>UInt32</string>
+				<string>Int64</string>
+				<string>UInt64</string>
+				<string>Single</string>
+				<string>String</string>
+				<string>CFString</string>
+				<string>Text</string>
+				<string>Ptr</string>
+            </keywords>
+        </highlightContext>
+
+        <highlightContext name="Keywords" highlightColor="#0000FF" bold="true">
+            <keywords>
+				<string>#Bad</string>
+				<string>#Else</string>
+				<string>#ElseIf</string>
+				<string>#EndIf</string>
+				<string>#If</string>
+				<string>#Pragma</string>
+				<string>#Tag</string>
+				<string>AddHandler</string>
+				<string>AddressOf</string>
+				<string>And</string>
+				<string>Array</string>
+				<string>As</string>
+				<string>Assigns</string>
+				<string>ByRef</string>
+				<string>ByVal</string>
+				<string>Call</string>
+				<string>Case</string>
+				<string>Catch</string>
+				<string>Class</string>
+				<string>Const</string>
+				<string>Continue</string>
+				<string>CType</string>
+				<string>Declare</string>
+				<string>Delegate</string>
+				<string>Dim</string>
+				<string>Do</string>
+				<string>DownTo</string>
+				<string>Each</string>
+				<string>Else</string>
+				<string>ElseIf</string>
+				<string>End</string>
+				<string>Enum</string>
+				<string>Event</string>
+				<string>Exception</string>
+				<string>Exit</string>
+				<string>Extends</string>
+				<string>False</string>
+				<string>Finally</string>
+				<string>For</string>
+				<string>Function</string>
+				<string>Get</string>
+				<string>Global</string>
+				<string>GoTo</string>
+				<string>Handles</string>
+				<string>If</string>
+				<string>Implements</string>
+				<string>In</string>
+				<string>Inherits</string>
+				<string>Inline68K</string>
+				<string>Interface</string>
+				<string>Is</string>
+				<string>IsA</string>
+				<string>Lib</string>
+				<string>Loop</string>
+				<string>Me</string>
+				<string>Mod</string>
+				<string>Module</string>
+				<string>Namespace</string>
+				<string>New</string>
+				<string>Next</string>
+				<string>Nil</string>
+				<string>Not</string>
+				<string>Object</string>
+				<string>Of</string>
+				<string>Optional</string>
+				<string>Or</string>
+				<string>ParamArray</string>
+				<string>Private</string>
+				<string>Property</string>
+				<string>Protected</string>
+				<string>Public</string>
+				<string>Raise</string>
+				<string>RaiseEvent</string>
+				<string>Redim</string>
+				<string>Rem</string>
+				<string>RemoveHandler</string>
+				<string>Return</string>
+				<string>Select</string>
+				<string>Self</string>
+				<string>Set</string>
+				<string>Shared</string>
+				<string>Soft</string>
+				<string>Static</string>
+				<string>Step</string>
+				<string>Structure</string>
+				<string>Sub</string>
+				<string>Super</string>
+				<string>Then</string>
+				<string>To</string>
+				<string>True</string>
+				<string>Try</string>
+				<string>Using</string>
+				<string>Until</string>
+				<string>Wend</string>
+				<string>While</string>
+				<string>With</string>
+            </keywords>
+        </highlightContext>
+	</contexts>
+</highlightDefinition>
