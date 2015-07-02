@@ -106,7 +106,6 @@ Inherits Thread
 		    nextLine = lines.getLine(lines.nextBlockEndLine(index, true))
 		    if nextLine <> nil and ((line.folded <> not nextLine.visible) or (line.folded and not line.isBlockStart)) then
 		      //if we got to this point, is because it's a startblock in an invalid state.
-		      line.isBlockStart = true
 		      call lines.toggleLineFolding(index)
 		    end if
 		  end if
