@@ -530,7 +530,6 @@ Class LineManager
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    
 		  #endif
 		  
 		  dim testLine as TextLine
@@ -539,6 +538,8 @@ Class LineManager
 		  if not ignoreIfLineIsBlockStart and not testLine.isBlockStart then
 		    Return -1
 		  end if
+		  
+		  dim forRule as Object = testLine.BlockStartRule
 		  
 		  dim depth as integer
 		  dim idx, match, lastLine as Integer
@@ -550,19 +551,19 @@ Class LineManager
 		    testLine = getLine(idx)
 		    if testLine = nil then Continue for
 		    
-		    if depth = 0 and testLine.isBlockEnd then
+		    dim isBlkEnd as Boolean = testLine.isBlockEnd (forRule)
+		    if depth = 0 and isBlkEnd then
 		      //found it
 		      match = idx
 		      exit for
-		      
+		    else
 		      //nested
-		    elseif testLine.isBlockStart and not testline.isBlockEnd then
-		      depth = depth + 1
-		      
-		      //nested out
-		    elseif testLine.isBlockEnd and not testLine.isBlockStart then
-		      depth = depth - 1
-		      
+		      dim isBlkStart as Boolean = testLine.isBlockStart (forRule)
+		      if isBlkStart and not isBlkEnd then
+		        depth = depth + 1
+		      elseif isBlkEnd and not isBlkStart then //nested out
+		        depth = depth - 1
+		      end if
 		    end if
 		  next
 		  
@@ -627,13 +628,12 @@ Class LineManager
 
 	#tag Method, Flags = &h0
 		Function previousBlockStartLine(forLine as integer, ignoreIfLineIsBlockEnd as boolean = false) As integer
-		  //Finds then previous block start from this line,
+		  //Finds the previous block start from this line,
 		  //It accounts for nested blocks.
 		  
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    
 		  #endif
 		  
 		  dim testLine as TextLine
@@ -643,6 +643,8 @@ Class LineManager
 		    Return -1
 		  end if
 		  
+		  dim forRule as Object = testLine.BlockEndRule
+		  
 		  dim depth as integer
 		  dim idx, match as Integer
 		  
@@ -651,19 +653,19 @@ Class LineManager
 		    testLine = getLine(idx)
 		    if testLine = nil then Continue for
 		    
-		    if depth = 0 and testLine.isBlockStart then
+		    dim isBlkStart as Boolean = testLine.isBlockStart (forRule)
+		    if depth = 0 and isBlkStart then
 		      //found it
 		      match = idx
 		      exit for
-		      
+		    else
 		      //nested
-		    elseif testLine.isBlockEnd and not testLine.isBlockStart then
-		      depth = depth + 1
-		      
-		      //out of inner block...
-		    elseif testLine.isBlockStart and not testLine.isBlockEnd then
-		      depth = depth - 1
-		      
+		      dim isBlkEnd as Boolean = testLine.isBlockEnd (forRule)
+		      if isBlkEnd and not isBlkStart then
+		        depth = depth + 1
+		      elseif isBlkStart and not isBlkEnd then //out of inner block
+		        depth = depth - 1
+		      end if
 		    end if
 		  next
 		  
@@ -974,6 +976,7 @@ Class LineManager
 		  //now, find the range...
 		  dim testLine as TextLine
 		  dim idx, match as Integer
+		  dim forRule as Object
 		  
 		  match = -1
 		  if line.isBlockStart then
@@ -981,20 +984,22 @@ Class LineManager
 		    match = nextBlockEndLine(lineNumber)
 		    
 		    if match < 0 then
-		      line.isBlockStart = False
 		      Return -1
 		    end if
+		    
+		    forRule = line.BlockStartRule
 		    
 		  else
 		    //search up
 		    match = previousBlockStartLine(lineNumber)
 		    
 		    if match < 0 then
-		      line.isBlockEnd = False
 		      Return -1
 		    end if
-		    //toggle lines' visibility
 		    
+		    forRule = line.BlockEndRule
+		    
+		    //toggle lines' visibility
 		    line = getLine(match)
 		    dim tmp as Integer
 		    tmp = match
@@ -1016,10 +1021,13 @@ Class LineManager
 		      //we have to check for parentStates!
 		      testLine.visible = lineStack(UBound(lineStack))
 		      
-		      if testLine.isBlockStart and not testLine.isBlockEnd then
+		      dim isBlkStart as Boolean = testLine.isBlockStart (forRule)
+		      dim isBlkEnd as Boolean = testLine.isBlockEnd (forRule)
+		      
+		      if isBlkStart and not isBlkEnd then
 		        lineStack.Append(not testLine.folded and lineStack(UBound(lineStack)))
 		        
-		      ElseIf testLine.isBlockEnd and not testLine.isBlockStart then
+		      ElseIf isBlkEnd and not isBlkStart then
 		        call lineStack.Pop
 		        
 		      End if

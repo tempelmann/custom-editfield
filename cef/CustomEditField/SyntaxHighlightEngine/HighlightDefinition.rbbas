@@ -305,8 +305,8 @@ Protected Class HighlightDefinition
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IsBlockEnd(lineText as string, stateIn as String, ByRef stateOut as String) As Boolean
-		  // returns true if it's a block end, and new state
+		Function IsBlockEnd(lineText as string, stateIn as String, ByRef stateOut as String, ByRef ruleOut as Object) As Boolean
+		  // returns true if it's a block end, new state and the matched rule (opaque, only useful for matching with IsBlockStart's returned value)
 		  
 		  stateOut = stateIn
 		  
@@ -321,11 +321,13 @@ Protected Class HighlightDefinition
 		      if p <> nil then
 		        dim scanner as RegEx = p.Left
 		        if scanner.Search(lineText) <> nil then
-		          dim state as Pair = p.Right
+		          dim ruleAndState as Pair = p.Right
+		          dim state as Pair = ruleAndState.Right
 		          if state.Left.BooleanValue then
 		            // change state
 		            stateOut = state.Right
 		          end
+		          ruleOut = ruleAndState.Left
 		          return true
 		        end
 		      end if
@@ -335,8 +337,8 @@ Protected Class HighlightDefinition
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function IsBlockStart(lineText as string, stateIn as String, ByRef stateOut as String) As Integer
-		  // returns indent value and new state
+		Function IsBlockStart(lineText as string, stateIn as String, ByRef stateOut as String, ByRef ruleOut as Object) As Integer
+		  // returns indent value, new state and the matched rule (opaque, only useful for matching with IsBlockEnd's returned value)
 		  
 		  #if DebugBuild and EditFieldGlobals.DebugTiming
 		    dim runtimer as new Debugging.AccumulationTimer(CurrentMethodName)
@@ -357,6 +359,7 @@ Protected Class HighlightDefinition
 		            // change state
 		            stateOut = state.Right
 		          end
+		          ruleOut = scanner
 		          return indentAndState.Left
 		        end
 		      end if
@@ -449,6 +452,8 @@ Protected Class HighlightDefinition
 		      Return False
 		    end if
 		    
+		    dim lastStartRule as Object
+		    
 		    for i=0 to root.ChildCount-1
 		      node=root.Child(i)
 		      select case node.Name
@@ -457,6 +462,11 @@ Protected Class HighlightDefinition
 		        Name=node.FirstChild.Value
 		        
 		      case "blockStartMarker"
+		        if lastStartRule <> nil then
+		          // Error: There's still an unfinished start rule open
+		          break
+		          return false
+		        end
 		        dim newstate as XmlAttribute = node.GetAttributeNode("newstate")
 		        dim newstateValue as String
 		        if newstate <> nil then newstateValue = newstate.Value
@@ -470,9 +480,15 @@ Protected Class HighlightDefinition
 		        end if
 		        dim re as new RegEx
 		        re.SearchPattern = node.FirstChild.Value
-		        values.Append re : (val(node.GetAttribute("indent")) : (newstate <> nil : newstateValue))
+		        values.Append re : (node.GetAttribute("indent").Val : (newstate <> nil : newstateValue))
+		        lastStartRule = re
 		        
 		      case "blockEndMarker"
+		        if lastStartRule = nil then
+		          // Error: End rule without start rule
+		          break
+		          return false
+		        end
 		        dim newstate as XmlAttribute = node.GetAttributeNode("newstate")
 		        dim newstateValue as String
 		        if newstate <> nil then newstateValue = newstate.Value
@@ -486,7 +502,8 @@ Protected Class HighlightDefinition
 		        end if
 		        dim re as new RegEx
 		        re.SearchPattern = node.FirstChild.Value
-		        values.Append re : (newstate <> nil : newstateValue)
+		        values.Append re : (lastStartRule : (newstate <> nil : newstateValue))
+		        lastStartRule = nil
 		        
 		      case "lineContinuationMarker"
 		        //indent is the number of indentations.
@@ -692,13 +709,13 @@ Protected Class HighlightDefinition
 		    dim ps() as Pair = blockEndDef.Value(cond)
 		    for each p as Pair in ps
 		      // p.Left: RegEx with SearchPattern
-		      // p.Right: Pair of indent and state
+		      // p.Right: Pair of (rule_ref, Pair of (indent, state))
 		      node = root.AppendChild(xml.CreateElement("blockEndMarker"))
 		      node.AppendChild(xml.CreateTextNode(RegEx(p.Left.ObjectValue).SearchPattern))
 		      if cond <> "" then
 		        node.SetAttribute("condition", cond)
 		      end if
-		      dim state as Pair = p.Right
+		      dim state as Pair = Pair(p.Right).Right
 		      if state.Left.BooleanValue then
 		        node.SetAttribute("newstate", state.Right)
 		      end if
@@ -812,7 +829,7 @@ Protected Class HighlightDefinition
 	#tag Property, Flags = &h21
 		#tag Note
 			Key: condition
-			Value: Array of Pair of (regex, Pair of (changeState as Boolean : newState as String)
+			Value: Array of Pair of (regex, Pair of (regex_of_blockStart, Pair of (changeState as Boolean : newState as String))
 		#tag EndNote
 		Private blockEndDef As dictionary
 	#tag EndProperty

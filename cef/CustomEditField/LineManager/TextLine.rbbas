@@ -28,8 +28,10 @@ Inherits TextSegment
 		  mIndentationStateOut = from.mIndentationStateOut
 		  mChangedIndentState = from.mChangedIndentState
 		  mIsBlkStart = from.mIsBlkStart
+		  mIsBlkEnd = from.mIsBlkEnd
 		  mBlockIndent = from.mBlockIndent
-		  isBlockEnd = from.isBlockEnd
+		  mBlockStartRule = from.mBlockStartRule
+		  mBlockEndRule = from.mBlockEndRule
 		  isContinuedFromLine = from.isContinuedFromLine
 		  
 		  InvalidateWords()
@@ -47,6 +49,18 @@ Inherits TextSegment
 		    end if
 		  next
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function BlockEndRule() As Object
+		  return mBlockEndRule
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function BlockStartRule() As Object
+		  return mBlockStartRule
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -143,6 +157,18 @@ Inherits TextSegment
 		Sub InvalidateWords()
 		  redim words(-1)
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function isBlockEnd(forRule as Object = nil) As Boolean
+		  return mIsBlkEnd and (forRule = nil or forRule = mBlockEndRule)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function isBlockStart(forRule as Object = nil) As Boolean
+		  return mIsBlkStart and mBlockIndent <> 0 and (forRule = nil or forRule = mBlockStartRule)
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -702,27 +728,28 @@ Inherits TextSegment
 		  end
 		  
 		  if me.length = 0 then
-		    mIsBlkStart = false
 		    mBlockIndent = 0
-		    isBlockEnd = false
+		    mIsBlkStart = false
+		    mIsBlkEnd = false
+		    mBlockStartRule = nil
+		    mBlockEndRule = nil
 		    Return
 		  end
 		  
 		  dim newState as String
-		  mBlockIndent = definition.isBlockStart(myText, mIndentationStateIn, newState)
+		  mBlockIndent = definition.isBlockStart(myText, mIndentationStateIn, newState, mBlockStartRule)
 		  if newState <> mIndentationStateOut then
 		    mIndentationStateOut = newState
 		    mChangedIndentState = true
 		  end
 		  
-		  isBlockEnd = definition.isBlockEnd(myText, newState, newState)
+		  mIsBlkEnd = definition.isBlockEnd(myText, newState, newState, mBlockEndRule)
 		  if newState <> mIndentationStateOut then
 		    mIndentationStateOut = newState
 		    mChangedIndentState = true
 		  end
 		  
 		  mIsBlkStart = mBlockIndent <> 0
-		  
 		End Sub
 	#tag EndMethod
 
@@ -809,24 +836,6 @@ Inherits TextSegment
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		isBlockEnd As boolean
-	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mIsBlkStart and mBlockIndent <> 0
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mIsBlkStart = value
-			End Set
-		#tag EndSetter
-		isBlockStart As boolean
-	#tag EndComputedProperty
-
-	#tag Property, Flags = &h0
 		isContinuedFromLine As Integer = -1
 	#tag EndProperty
 
@@ -843,7 +852,15 @@ Inherits TextSegment
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mBlockEndRule As Object
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mBlockIndent As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mBlockStartRule As Object
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -860,6 +877,10 @@ Inherits TextSegment
 
 	#tag Property, Flags = &h21
 		Private mIndentationStateOut As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mIsBlkEnd As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
