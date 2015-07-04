@@ -7,7 +7,7 @@
 	<blockEndMarker>^\s*end\s+module\b</blockEndMarker>
 
 <!-- CLASS block -->
-	<blockStartMarker indent="1">^\s*(protected\b|protected\b|private\b)?\s*class\b</blockStartMarker>
+	<blockStartMarker indent="1">^\s*(protected\b|private\b)?\s*class\b</blockStartMarker>
 	<blockEndMarker>^\s*end\s+class\b</blockEndMarker>
 
 <!-- everything else -->
@@ -40,11 +40,11 @@
 	
 	<contexts defaultColor="#000000" caseSensitive="no">		
         <highlightContext name="Doubles" highlightColor="#006532">
-            <entryRegEx>(?&lt;=[^\w\d]|^)(([0-9]+\.[0-9]*)|([0-9]{11,}))(?=[^\w\d]|$)</entryRegEx>
+            <entryRegEx>(?&lt;=[^\w.]|^)(?=\d+\.|\.\d+|\d+e(?:\d|\b))(\d*\.\d*(?:e[-+]?\d*)?|\d+e[-+]?\d*)(?=[^\w.]|$)</entryRegEx>
         </highlightContext>    	
         
         <highlightContext name="Integers" highlightColor="#326598">
-            <entryRegEx>(?&lt;=[^\w\d]|^)([0-9]{1,10})(?=[^\w\d]|$)</entryRegEx>
+            <entryRegEx>(?&lt;=[^\w.]|^)\d+(?=[^\w.]|$)</entryRegEx>
         </highlightContext>
 
 		<highlightContext name="PreProcessor" highlightColor="#0000FF">
@@ -94,13 +94,11 @@
 
         <highlightContext name="Keywords" highlightColor="#0000FF" bold="true">
             <keywords>
-				<string>#Bad</string>
 				<string>#Else</string>
 				<string>#ElseIf</string>
 				<string>#EndIf</string>
 				<string>#If</string>
 				<string>#Pragma</string>
-				<string>#Tag</string>
 				<string>AddHandler</string>
 				<string>AddressOf</string>
 				<string>And</string>
