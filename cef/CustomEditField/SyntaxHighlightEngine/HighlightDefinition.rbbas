@@ -942,7 +942,7 @@ Protected Class HighlightDefinition
 	#tag EndProperty
 
 
-	#tag Constant, Name = version, Type = Double, Dynamic = False, Default = \"1.3", Scope = Public
+	#tag Constant, Name = version, Type = Double, Dynamic = False, Default = \"1.4", Scope = Public
 	#tag EndConstant
 
 

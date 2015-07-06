@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<highlightDefinition version="1.3">
+<highlightDefinition version="1.4">
 	<name>REALbasic</name>
 
 <!-- MODULE block -->
@@ -7,7 +7,7 @@
 	<blockEndMarker>^\s*end\s+module\b</blockEndMarker>
 
 <!-- CLASS block -->
-	<blockStartMarker indent="1">^\s*(protected\b|protected\b|private\b)?\s*class\b</blockStartMarker>
+	<blockStartMarker indent="1">^\s*(protected\b|private\b)?\s*class\b</blockStartMarker>
 	<blockEndMarker>^\s*end\s+class\b</blockEndMarker>
 
 <!-- everything else -->
@@ -40,11 +40,11 @@
 	
 	<contexts defaultColor="#000000" caseSensitive="no">		
         <highlightContext name="Doubles" highlightColor="#006532">
-            <entryRegEx>(?&lt;=[^\w\d]|^)(([0-9]+\.[0-9]*)|([0-9]{11,}))(?=[^\w\d]|$)</entryRegEx>
+            <entryRegEx>(?&lt;=[^\w.&#x7F;-&#x10F7FF;]|^)(?=\d+\.|\.\d+|\d+e(?:\d|\b))(\d*\.\d*(?:e[-+]?\d*)?|\d+e[-+]?\d*)(?=[^\w.&#x7F;-&#x10F7FF;]|$)</entryRegEx>
         </highlightContext>    	
         
         <highlightContext name="Integers" highlightColor="#326598">
-            <entryRegEx>(?&lt;=[^\w\d]|^)([0-9]{1,10})(?=[^\w\d]|$)</entryRegEx>
+            <entryRegEx>(?&lt;=[^\w.&#x7F;-&#x10F7FF;]|^)(?:\d+|&amp;h[[:xdigit:]]*\b|&amp;o[0-7]*\b|&amp;b[01]*\b)(?=[^\w.&#x7F;-&#x10F7FF;]|$)</entryRegEx>
         </highlightContext>
 
 		<highlightContext name="PreProcessor" highlightColor="#0000FF">
@@ -62,13 +62,24 @@
 		</highlightContext>
 		
 		<highlightContext name="REM-Comment" highlightColor="#7F0000" italic="true">
-			<startRegEx>^\s*rem\s</startRegEx>
+			<startRegEx>\brem\b</startRegEx>
 			<endRegEx>[\n\r]</endRegEx>
 		</highlightContext>
 		
 		<highlightContext name="String" highlightColor="#6500FE">
-			<startRegEx>"</startRegEx>
-			<endRegEx>[^"\n\r]*["\n\r]</endRegEx>
+			<entryRegEx>"[^"\r\n]*["\r\n]|&amp;u[[:xdigit:]]*\b</entryRegEx>
+		</highlightContext>
+
+		<highlightContext name="color_red" highlightColor="#FF0000">
+				<entryRegEx>(?&lt;=&amp;c)[[:xdigit:]]{1,2}</entryRegEx>
+		</highlightContext>
+
+		<highlightContext name="color_green" highlightColor="#00FF00">
+				<entryRegEx>(?&lt;=&amp;c[[:xdigit:]]{2})[[:xdigit:]]{1,2}</entryRegEx>
+		</highlightContext>
+
+		<highlightContext name="color_blue" highlightColor="#0000FF">
+				<entryRegEx>(?&lt;=&amp;c[[:xdigit:]]{4})[[:xdigit:]]{1,2}</entryRegEx>
 		</highlightContext>
 
         <highlightContext name="BasicTypes" highlightColor="#0000FF" bold="true">
@@ -94,13 +105,11 @@
 
         <highlightContext name="Keywords" highlightColor="#0000FF" bold="true">
             <keywords>
-				<string>#Bad</string>
 				<string>#Else</string>
 				<string>#ElseIf</string>
 				<string>#EndIf</string>
 				<string>#If</string>
 				<string>#Pragma</string>
-				<string>#Tag</string>
 				<string>AddHandler</string>
 				<string>AddressOf</string>
 				<string>And</string>
