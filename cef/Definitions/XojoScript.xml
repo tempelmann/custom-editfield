@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<highlightDefinition version="1.3">
+<highlightDefinition version="1.4">
 	<name>XojoScript</name>
 
 <!-- MODULE block -->
@@ -10,39 +10,11 @@
 	<blockStartMarker indent="1">^\s*(protected\b|private\b)?\s*class\b</blockStartMarker>
 	<blockEndMarker>^\s*end\s+class\b</blockEndMarker>
 
-<!-- WHILE block -->
-	<blockStartMarker indent="1">^\s*while\b</blockStartMarker>
-	<blockEndMarker>^\s*wend</blockEndMarker>
-
-<!-- DO block -->
-	<blockStartMarker indent="1">^\s*do\b</blockStartMarker>
-	<blockEndMarker>^\s*loop\b</blockEndMarker>
-
-<!-- FOR block -->
-	<blockStartMarker indent="1">^\s*for\b</blockStartMarker>
-	<blockEndMarker>^\s*next\b</blockEndMarker>
-
-<!-- SUB block -->
-	<blockStartMarker indent="1">^\s*((public|protected|private)\s+)?(shared\s+)?sub\b</blockStartMarker>
-	<blockEndMarker>^\s*end\s+sub\b</blockEndMarker>
-
-<!-- FUNCTION block -->
-	<blockStartMarker indent="1">^\s*((public|protected|private)\s+)?(shared\s+)?function\b</blockStartMarker>
-	<blockEndMarker>^\s*end\s+function\b</blockEndMarker>
-
-<!-- IF block -->
-	<blockStartMarker indent="1">^\s*(?:(if|elseif)\b.*\sthen\b\s*(('|//)|(?!.+?))|if\s(?!.*\sthen\b))</blockStartMarker>
-<blockEndMarker>^\s*end\b(?:\s*(?://.*|'.*|REM\b.*)?$|\s+if\b)</blockEndMarker>
-
-<!-- SELECT block -->
-	<blockStartMarker indent="1">^\s*select</blockStartMarker>
-	<blockEndMarker>^\s*end\b(?:\s*(?://.*|'.*|REM\b.*)?$|\s+select\b)</blockEndMarker>
-
 <!-- everything else -->
-	<blockStartMarker indent="1">^\s*(?:try|catch|else|Get|Set|#if|#elseif|#else)\b</blockStartMarker>
-	<blockEndMarker>^\s*(?:catch|#else|#elseif|#endif)\b</blockEndMarker>
+	<blockStartMarker indent="1">^\s*(?:(if|elseif)\b.*\sthen\b\s*(('|//)|(?!.+?))|if\s(?!.*\sthen\b)|^\s*(public\b|protected\b|private\b)?\s*(shared\b)?\s*(?&lt;!end\b)\s*(sub|function|property)\b|(do|for|while|select|case|try|catch|else|Get|Set|#if|#elseif|#else)\b)</blockStartMarker>
+	<blockEndMarker>^\s*(?:end|wend|next|loop|else|case|catch|elseif|#else|#elseif|#endif)\b</blockEndMarker>
 
-	<!-- these prevent subs and functions inside an interface from being indented: -->
+<!-- INTERFACE block - prevents anything inside an interface from being indented: -->
 	<blockStartMarker indent="1" newstate="inside_interface">^\s*(protected\b|private\b)?\s*interface\b</blockStartMarker>
 	<blockEndMarker condition="inside_interface" newstate="">^\s*end\s+interface\b</blockEndMarker>
 
@@ -68,40 +40,48 @@
 	
 	<contexts defaultColor="#000000" caseSensitive="no">		
         <highlightContext name="Doubles" highlightColor="#006532">
-            <entryRegEx>(?&lt;=[^\w\d]|^)(([0-9]+\.[0-9]*)|([0-9]{11,}))(?=[^\w\d]|$)</entryRegEx>
+            <entryRegEx>(?&lt;=[^\w.&#x7F;-&#x10F7FF;]|^)(?=\d+\.|\.\d+|\d+e(?:\d|\b))(\d*\.\d*(?:e[-+]?\d*)?|\d+e[-+]?\d*)(?=[^\w.&#x7F;-&#x10F7FF;]|$)</entryRegEx>
         </highlightContext>    	
         
         <highlightContext name="Integers" highlightColor="#326598">
-            <entryRegEx>(?&lt;=[^\w\d]|^)([0-9]{1,10})(?=[^\w\d]|$)</entryRegEx>
+            <entryRegEx>(?&lt;=[^\w.&#x7F;-&#x10F7FF;]|^)(?:\d+|&amp;h[[:xdigit:]]*\b|&amp;o[0-7]*\b|&amp;b[01]*\b)(?=[^\w.&#x7F;-&#x10F7FF;]|$)</entryRegEx>
         </highlightContext>
 
 		<highlightContext name="PreProcessor" highlightColor="#0000FF">
             <entryRegEx>(#\w+)</entryRegEx>
         </highlightContext>        
 		
-		<highlightContext name="Comment" highlightColor="#7F0000" italic="true">
-			<startRegEx>'</startRegEx>
-			<endRegEx>[\n\r]</endRegEx>
-		</highlightContext>
-		
-		<highlightContext name="C-Comment" highlightColor="#7F0000" italic="true">
-			<startRegEx>//</startRegEx>
-			<endRegEx>[\n\r]</endRegEx>
-		</highlightContext>
-		
-		<highlightContext name="REM-Comment" highlightColor="#7F0000" italic="true">
-			<startRegEx>^\s*rem\s</startRegEx>
+		<highlightContext name="Comment" highlightColor="#7F0000" italic="false">
+			<startRegEx>'|//|\brem\b</startRegEx>
 			<endRegEx>[\n\r]</endRegEx>
 		</highlightContext>
 		
 		<highlightContext name="String" highlightColor="#6500FE">
+			<!--
 			<startRegEx>"</startRegEx>
 			<endRegEx>[^"\n\r]*["\n\r]</endRegEx>
+			-->
+			
+			<entryRegEx>"[^"\r\n]*(?:"|$)|&amp;u[[:xdigit:]]*\b</entryRegEx>
+			
 		</highlightContext>
 
-        <highlightContext name="BasicTypes" highlightColor="#0000FF" bold="true">
+		<highlightContext name="color_red" highlightColor="#FF0000">
+				<entryRegEx>(?&lt;=&amp;c)[[:xdigit:]]{1,2}</entryRegEx>
+		</highlightContext>
+
+		<highlightContext name="color_green" highlightColor="#00FF00">
+				<entryRegEx>(?&lt;=&amp;c[[:xdigit:]]{2})[[:xdigit:]]{1,2}</entryRegEx>
+		</highlightContext>
+
+		<highlightContext name="color_blue" highlightColor="#0000FF">
+				<entryRegEx>(?&lt;=&amp;c[[:xdigit:]]{4})[[:xdigit:]]{1,2}</entryRegEx>
+		</highlightContext>
+
+        <highlightContext name="BasicTypes" highlightColor="#0000FF" bold="false">
             <keywords>
 				<string>Boolean</string>
+				<string>Byte</string>
 				<string>Color</string>
 				<string>Double</string>
 				<string>Integer</string>
@@ -122,21 +102,20 @@
             </keywords>
         </highlightContext>
 
-        <highlightContext name="Keywords" highlightColor="#0000FF" bold="true">
+        <highlightContext name="Keywords" highlightColor="#0000FF" bold="false">
             <keywords>
-				<string>#Bad</string>
 				<string>#Else</string>
 				<string>#ElseIf</string>
 				<string>#EndIf</string>
 				<string>#If</string>
 				<string>#Pragma</string>
-				<string>#Tag</string>
 				<string>AddHandler</string>
 				<string>AddressOf</string>
 				<string>And</string>
 				<string>Array</string>
 				<string>As</string>
 				<string>Assigns</string>
+				<string>Break</string>
 				<string>ByRef</string>
 				<string>ByVal</string>
 				<string>Call</string>
@@ -164,15 +143,12 @@
 				<string>Finally</string>
 				<string>For</string>
 				<string>Function</string>
-				<string>Get</string>
-				<string>Global</string>
 				<string>GoTo</string>
 				<string>Handles</string>
 				<string>If</string>
 				<string>Implements</string>
 				<string>In</string>
 				<string>Inherits</string>
-				<string>Inline68K</string>
 				<string>Interface</string>
 				<string>Is</string>
 				<string>IsA</string>
