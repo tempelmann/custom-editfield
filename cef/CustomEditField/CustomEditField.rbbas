@@ -3748,7 +3748,8 @@ Implements MessageReceiver
 		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
 		  
 		  // Use the default line ending from the line manager if the text is just the Return or Enter character.
-		  if text = chr(13) or text = chr(3) then text = lines.lineEnding
+		  text = ReplaceLineEndings(text, lines.lineEnding)
+		  text = text.ReplaceAll(chr(3), lines.lineEnding)
 		  
 		  dim removedText as String = TextStorage.getText(offset, length)
 		  dim removedAttrs() as TextLineAttributes = lines.getAttributesOfLinesInRange(offset, length)
