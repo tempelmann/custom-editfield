@@ -3496,6 +3496,7 @@ Implements MessageReceiver
 		  
 		  dim modified as Boolean
 		  dim previousLine as TextLine
+		  dim wasDirty as boolean = line.IsDirty
 		  
 		  // Determine the indentation level
 		  dim currTextUntrimmed as String = TextStorage.getText(line.offset, line.length)
@@ -3620,6 +3621,7 @@ Implements MessageReceiver
 		  
 		  if mIndentVisually then
 		    // we're done
+		    line.IsDirty = wasDirty
 		    return modified
 		  end if
 		  
@@ -3652,6 +3654,7 @@ Implements MessageReceiver
 		    end if
 		    
 		    private_replace (line.offset, origLeadingSpaces, theText, false, CurrentEventID, true, true)
+		    line.IsDirty = wasDirty
 		    modified = true
 		  end
 		  
