@@ -3099,7 +3099,7 @@ End
 	#tag Event
 		Sub Action()
 		  testField.IndentVisually = me.Value
-		  testField.ClearDirtyLines
+		  
 		End Sub
 	#tag EndEvent
 	#tag Event
