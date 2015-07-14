@@ -1941,8 +1941,8 @@ Implements MessageReceiver
 		  
 		  Return SelStart
 		  
-		Exception RegExSearchPatternException
-		  Return -1 //ignore these...
+		  Exception RegExSearchPatternException
+		    Return -1 //ignore these...
 		End Function
 	#tag EndMethod
 
@@ -1971,6 +1971,13 @@ Implements MessageReceiver
 		  if not EnableLineFoldings then Return 0
 		  Return blockStartImage.Width + 2
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ForceHonorRepaint()
+		  mIgnoreRepaintCount = 0
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -5247,12 +5254,31 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mIgnorerepaint
+			  return mIgnoreRepaintCount > 0
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mIgnorerepaint = value
+			  // Sets a counter so each True must be balanced with a False or
+			  // call ForceHonorRepaint
+			  
+			  //
+			  // Make sure it's never negative
+			  //
+			  if mIgnoreRepaintCount < 0 then
+			    mIgnoreRepaintCount = 0
+			  end if
+			  
+			  if value then
+			    
+			    mIgnoreRepaintCount = mIgnoreRepaintCount + 1
+			    
+			  elseif mIgnoreRepaintCount > 0 then
+			    
+			    mIgnoreRepaintCount = mIgnoreRepaintCount - 1
+			    
+			  end if
+			  
 			End Set
 		#tag EndSetter
 		IgnoreRepaint As boolean
@@ -5612,7 +5638,7 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mIgnorerepaint As boolean
+		Private mIgnoreRepaintCount As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
