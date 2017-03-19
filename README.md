@@ -15,13 +15,14 @@ On the Mac, it now fully supports Cocoa builds (the dead key issue has been fixe
 There has been done no work for 64 bit builds yet, though. You're welcome to test that and provide updates.
 
 
-###Installation
+### Installation
 
 Open the project in the IDE, select the **CustomEditField folder** in the project and use the ***Copy*** command to copy the data to the clipboard. Then paste it into your own project. (Attention: If you're using Xojo, save your project first, close the project and re-open it, otherwise the control won't work, e.g. typing won't appear.)
 
 To use it, drag the CustomEditField control into a Window.
 
-###Features
+### Features
+
  * Syntax Highlighting
  * Line auto-indenting (some problems, see Issues tracker)
  * Autocomplete
