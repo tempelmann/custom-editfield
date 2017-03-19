@@ -6,11 +6,14 @@
 
 It comes with examples for performing a "diff" on two adjacent texts, and for using its syntax highlighting engine with other types of edit fields.
 
-***Caution:*** When using this code in a ***Mac Cocoa*** app, text input with dead keys (e.g. by first pressing the ^ key, then a vovel key) will not work. To fix this, this code would need to use Xojo's TextInputCanvas plugin (https://github.com/xojo/TextInputCanvas), which it currently doesn't do.
-
 Note: If you need a more complete word processing solution that provides several different editor types then check out the ***Formatted Text Control*** (http://www.bkeeney.com/formatted-text-control) from BKeeney Software Inc.
 
 Supports all Xojo versions as well as REAL Studio 2012r2.1 (that's what Thomas Tempelmann uses for development).
+
+On the Mac, it now fully supports Cocoa builds (the dead key issue has been fixed in v1.8.2 (released 19 Mar 2017).
+
+There has been done no work for 64 bit builds yet, though. You're welcome to test that and provide updates.
+
 
 ###Installation
 

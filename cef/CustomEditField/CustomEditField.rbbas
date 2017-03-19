@@ -157,6 +157,56 @@ Implements MessageReceiver
 
 	#tag Event
 		Function KeyDown(Key As String) As Boolean
+		  #if TargetCocoa
+		    // Workaround for Cocoa
+		    //  (dead keys are usually handled by NSTextView/Field but here we are using a Canvas so we need to handle them by ourselves)
+		    // When pressing a dead key, we are passed Chr(0) by Xojo
+		    // Here we use directly the current NSEvent
+		    // Implemented after http://stackoverflow.com/questions/22566665/how-to-capture-unicode-from-key-events-without-an-nstextview
+		    // Written by Stéphane Mons
+		    
+		    try
+		      // Declares
+		      const CarbonLib = "Carbon.framework"
+		      const CocoaLib = "Cocoa.framework"
+		      declare function TISCopyCurrentKeyboardInputSource lib CarbonLib () as Ptr
+		      declare function TISGetInputSourceProperty lib CarbonLib (kbd as Ptr, propkey as CFStringRef) as Ptr
+		      declare function CFDataGetBytePtr lib CarbonLib (p as Ptr) as Ptr
+		      declare function UCKeyTranslate lib CarbonLib (layout as Ptr, virtualKeyCode as UInt16, keyAction as integer, modifierKeyState as integer, kbdType as UInt32, _
+		      transOpt as integer, byref deadKeyState as integer, maxLength as integer, byref actualLength as integer, unicodeString as Ptr) as integer
+		      declare function LMGetKbdType lib CarbonLib () as UInt32
+		      declare sub CFRelease lib CarbonLib (p as Ptr)
+		      declare function CFStringCreateWithCharacters lib CarbonLib (alloc as Ptr, str as Ptr, length as integer) as CFStringRef
+		      declare function NSClassFromString lib CocoaLib (name as CFStringRef) as Ptr
+		      declare function sharedApplication lib CocoaLib selector "sharedApplication" (cls as Ptr) as Ptr
+		      declare function currentEvent lib CocoaLib selector "currentEvent" (cls as Ptr) as Ptr
+		      declare function keyCode lib CocoaLib selector "keyCode" (id as Ptr) as UInt16
+		      declare function modifierFlags lib CocoaLib selector "modifierFlags" (id as Ptr) as integer
+		      
+		      static NSAppObject as Ptr = sharedApplication( NSClassFromString( "NSApplication" ))
+		      dim evt as Ptr = currentEvent( NSAppObject )
+		      static deadKeyState as integer //Dead keys state is kept between calls
+		      
+		      const unicodeStringLength = 4
+		      static unicodeString as new MemoryBlock( unicodeStringLength )
+		      
+		      dim currentKeyboard as Ptr = TISCopyCurrentKeyboardInputSource
+		      dim layoutData as Ptr = TISGetInputSourceProperty( currentKeyboard, "TISPropertyUnicodeKeyLayoutData" )
+		      
+		      dim realLength as integer
+		      call UCKeyTranslate( CFDataGetBytePtr( layoutData ), keyCode( evt ), 0, ShiftRight( modifierFlags( evt ), 16 ) AND &hFF, LMGetKbdType, 0, deadKeyState, unicodeStringLength, realLength, unicodeString )
+		      CFRelease currentKeyboard
+		      
+		      key = CFStringCreateWithCharacters( nil, unicodeString, realLength )
+		      
+		      if key = "" then
+		        return true
+		      end if
+		    catch exc as RuntimeException
+		      beep
+		    end try
+		  #endif
+		  
 		  if keyDown(key) then
 		    Redraw
 		    Return true
@@ -1941,8 +1991,8 @@ Implements MessageReceiver
 		  
 		  Return SelStart
 		  
-		  Exception RegExSearchPatternException
-		    Return -1 //ignore these...
+		Exception RegExSearchPatternException
+		  Return -1 //ignore these...
 		End Function
 	#tag EndMethod
 
