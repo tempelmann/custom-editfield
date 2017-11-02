@@ -1842,7 +1842,7 @@ Implements MessageReceiver
 		  
 		  //paint the location of the Previous/next block char
 		  if blockBeginPosX >= 0 then
-		    PaintHighlightedBlock(gr, line.VisualIndent(self.IndentVisually))
+		    PaintHighlightedBlock(gr)
 		    blockBeginPosX = -1
 		    blockBeginPosY = -1
 		  end if
@@ -3389,14 +3389,14 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub PaintHighlightedBlock(g as graphics, indent as Integer)
+		Protected Sub PaintHighlightedBlock(g as graphics)
 		  if not HighlightMatchingBrackets then Return
 		  
 		  //paints a blue circle over the highlighted block char.
 		  g.PenWidth = 2
 		  g.PenHeight = 2
 		  g.ForeColor = &c4444FF
-		  g.DrawOval indent + blockBeginPosX - 2 - g.StringWidth("(")/2, blockBeginPosY - g.TextHeight - 1, g.TextHeight + 4, g.TextHeight + 4
+		  g.DrawOval blockBeginPosX - 2 - g.StringWidth("(")/2, blockBeginPosY - g.TextHeight - 1, g.TextHeight + 4, g.TextHeight + 4
 		  g.PenWidth = 1
 		  g.PenHeight = 1
 		End Sub
