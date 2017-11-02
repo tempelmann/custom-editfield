@@ -2,15 +2,27 @@
 			Begin BuildStepList Linux
 				Begin BuildProjectStep Build
 				End
+				Begin CopyFilesBuildStep CopyDefinitionsLinux
+					AppliesTo = 0
+					Destination = 1
+					Subdirectory = 
+					FolderItem = Li4vRGVmaW5pdGlvbnMv
+				End
 			End
 			Begin BuildStepList Mac OS X
 				Begin BuildProjectStep Build
+				End
+				Begin CopyFilesBuildStep CopyDefinitionsMac
+					AppliesTo = 0
+					Destination = 1
+					Subdirectory = 
+					FolderItem = Li4vRGVmaW5pdGlvbnMv
 				End
 				Begin IDEScriptBuildStep EnableRetinaSupport , AppliesTo = 0
 					// Adds a key to the Info.plist to enable Retina (HiDPI) resolition.
 					// Works only for Mac Cocoa builds.
 					
-					if CurrentBuildTarget <> 7 then
+					if CurrentBuildTarget <> 7 and CurrentBuildTarget <> 16 then
 					return
 					end
 					
@@ -29,6 +41,12 @@
 			End
 			Begin BuildStepList Windows
 				Begin BuildProjectStep Build
+				End
+				Begin CopyFilesBuildStep CopyDefinitionsWin
+					AppliesTo = 0
+					Destination = 1
+					Subdirectory = 
+					FolderItem = Li4vRGVmaW5pdGlvbnMv
 				End
 			End
 #tag EndBuildAutomation

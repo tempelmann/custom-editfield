@@ -2375,21 +2375,30 @@ End
 		  // Added 11/15/2001 by Jarvis Badgley
 		  // Modified 2/3/2002 by Kevin Ballard
 		  
-		  dim w as Window=self
-		  Dim osErr As Integer
-		  dim v as variant
-		  
-		  #if TargetMacOS then
-		    #if TargetCarbon or TargetCocoa then
-		      Declare Function SetWindowModified Lib "Carbon" (window As WindowPtr, modified As Integer) As Integer
-		    #else
-		      Declare Function SetWindowModified Lib "WindowsLib" (window As WindowPtr, modified As Integer) As Integer
-		    #endif // TargetCarbon
+		  #if RBVersion < 2013.0 then
 		    
-		    v=b
-		    osErr=SetWindowModified(w,v)
-		  #endif // TargetMacOS
-		  
+		    dim w as Window=self
+		    Dim osErr As Integer
+		    dim v as variant
+		    
+		    #if TargetMacOS then
+		      #if TargetCarbon or TargetCocoa then
+		        Declare Function SetWindowModified Lib "Carbon" (window As WindowPtr, modified As Integer) As Integer
+		      #else
+		        Declare Function SetWindowModified Lib "WindowsLib" (window As WindowPtr, modified As Integer) As Integer
+		      #endif // TargetCarbon
+		      
+		      v=b
+		      osErr=SetWindowModified(w,v)
+		    #endif // TargetMacOS
+		    
+		  #else // Xojo
+		    
+		    // Added 11/2/2017 by Kem Tekinay
+		    
+		    self.ContentsChanged = b
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -2757,7 +2766,7 @@ End
 		  me.RowTag(me.ListCount - 1) = nil
 		  
 		  dim defsFolder as FolderItem
-		  defsFolder = GetFolderItem("Definitions")
+		  defsFolder = App.ResourcesFolder.Child("Definitions")
 		  if not defsFolder.Exists then
 		    // this is where we find it on Windows, usually
 		    defsFolder = GetFolderItem("").Parent.Child("Definitions")
