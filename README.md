@@ -12,8 +12,6 @@ Supports all Xojo versions as well as REAL Studio 2012r2.1 (that's what Thomas T
 
 On the Mac, it now fully supports Cocoa builds (the dead key issue has been fixed in v1.8.2 (released 19 Mar 2017).
 
-There has been done no work for 64 bit builds yet, though. You're welcome to test that and provide updates.
-
 
 ### Installation
 
