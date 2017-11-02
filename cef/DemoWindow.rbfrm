@@ -2757,7 +2757,7 @@ End
 		  me.RowTag(me.ListCount - 1) = nil
 		  
 		  dim defsFolder as FolderItem
-		  defsFolder = GetFolderItem("Definitions")
+		  defsFolder = App.ResourcesFolder.Child("Definitions")
 		  if not defsFolder.Exists then
 		    // this is where we find it on Windows, usually
 		    defsFolder = GetFolderItem("").Parent.Child("Definitions")
