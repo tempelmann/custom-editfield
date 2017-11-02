@@ -1791,12 +1791,12 @@ Implements MessageReceiver
 		      
 		      dim tmpPic as Picture
 		      if mBackBuffer <> nil then
-		        tmpPic = NewPicture(gr.Width, gr.Height, 32)
+		        tmpPic = New Picture(gr.Width, gr.Height, 32)
 		        g = tmpPic.Graphics
 		        g.DrawPicture mBackBuffer, 0, 0, Width, Height, 0, 0, Width, Height
 		      end
 		      
-		      dim blockPicture as Picture = NewPicture(self.Width - LineNumOffset, self.Height, 32)
+		      dim blockPicture as Picture = New Picture(self.Width - LineNumOffset, self.Height, 32)
 		      Dim gb As Graphics = blockPicture.Graphics
 		      
 		      gb.ForeColor = &c000000
