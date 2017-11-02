@@ -51,7 +51,7 @@ Protected Module DragImage
 
 	#tag Method, Flags = &h0
 		Sub SetImage(extends d as Dragitem, p as Picture)
-		  #if targetMacOS
+		  #if targetMacOS and not Target64Bit
 		    dim theImage as Ptr = NewCGImage(p)
 		    if theImage = nil then
 		      return
@@ -77,16 +77,20 @@ Protected Module DragImage
 		    
 		    dim OSError as Integer = SetDragImageWithCGImage(d.Handle, theImage, offset, kDragStandardTranslucency)
 		    #pragma unused OSError
+		    
+		  #else
+		    #pragma unused d
+		    #pragma unused p
 		  #endif
 		  
-		finally // careful: any "return" above will not execute this finally block!
-		  #if targetMacOS
-		    declare sub CFRelease lib "Carbon.framework" (cf as Ptr)
-		    CFRelease theImage
-		  #endif
-		  
-		  
-		  
+		  finally // careful: any "return" above will not execute this finally block!
+		    #if targetMacOS and not Target64Bit
+		      declare sub CFRelease lib "Carbon.framework" (cf as Ptr)
+		      CFRelease theImage
+		    #endif
+		    
+		    
+		    
 		End Sub
 	#tag EndMethod
 

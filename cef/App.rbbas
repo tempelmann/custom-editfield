@@ -61,6 +61,44 @@ Inherits Application
 	#tag EndMenuHandler
 
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  dim f as FolderItem = App.ExecutableFile.Parent
+			  
+			  #if TargetMacOS
+			    
+			    while f.Name <> "Contents"
+			      f = f.Parent
+			    wend
+			    f = f.Child("Resources")
+			    
+			  #else
+			    
+			    dim parent as FolderItem = f
+			    f = parent.Child("Resources")
+			    if not f.Exists then
+			      dim appName as string = App.ExecutableFile.Name
+			      if appName.Right(4) = ".exe" then
+			        appName = appName.Left(appName.Len - 4)
+			      end if
+			      f = parent.Child(appName + " Resources")
+			    end if
+			    
+			    if not f.Exists then
+			      f = nil
+			    end if
+			    
+			  #endif
+			  
+			  return f
+			  
+			End Get
+		#tag EndGetter
+		ResourcesFolder As FolderItem
+	#tag EndComputedProperty
+
+
 	#tag Constant, Name = AppName, Type = String, Dynamic = False, Default = \"CustomEditField Demo", Scope = Public
 	#tag EndConstant
 
