@@ -461,7 +461,7 @@ End
 
 	#tag Method, Flags = &h21
 		Private Function drawFocusRing(ringVisible as Boolean = true, windowGraphics As Graphics) As Boolean
-		  #if TargetMacOS
+		  #if TargetCarbon
 		    
 		    declare function QDBeginCGContext lib "Carbon" (port as Int32, ByRef contextPtr as Int32) as Integer
 		    declare sub CGContextSynchronize lib "Carbon" (context as Int32)
@@ -482,7 +482,11 @@ End
 		    
 		    // We have to open a new drawing context because otherwise we might get our drawings clipped
 		    // or we might draw into the wrong window
-		    grafPort = windowGraphics.Handle(windowGraphics.HandleTypeCGrafPtr)
+		    dim w as Window = me.Window
+		    while w isA ContainerControl
+		      w = ContainerControl(w).Window
+		    wend
+		    grafPort = w.Graphics.Handle(Graphics.HandleTypeCGrafPtr)
 		    res = QDBeginCGContext (grafPort, context)
 		    if res = 0 then
 		      // Now draw the ring
@@ -501,6 +505,9 @@ End
 		    end
 		    if res <> 0 then break
 		    return res = 0
+		    
+		  #elseif TargetCocoa
+		    
 		    
 		  #else
 		    
@@ -969,10 +976,11 @@ End
 	#tag EndNote
 
 	#tag Note, Name = Showing a Focus Ring
-		
 		As of v.1.8, to show a Focus Ring around the CustomScrollableEditField, you must set the 
-		UseFocusRing property to True, and you must called UpdateFocusRiing from the 
+		UseFocusRing property to True, and you must call UpdateFocusRing from the 
 		parent Window's Paint event with the parent Window's Graphics property.
+		
+		Also, this only works in Mac Carbon builds, not in Cocoa, yet.
 		
 		The Window's Paint event should look something like this:
 		
@@ -1612,10 +1620,7 @@ End
 		Sub GotFocus()
 		  self.mHasFocus = true
 		  GotFocus()
-		  #if RBVersion < 2014.01
-		    //
-		    // I don't really know when Invalidate was introduced
-		    //
+		  #if RBVersion < 2014.01 // I don't really know when Invalidate was introduced
 		    self.TrueWindow.Refresh
 		  #else
 		    self.TrueWindow.Invalidate
@@ -1626,10 +1631,7 @@ End
 	#tag Event
 		Sub LostFocus()
 		  self.mHasFocus = false
-		  #if RBVersion < 2014.01
-		    //
-		    // I don't really know when Invalidate was introduced
-		    //
+		  #if RBVersion < 2014.01 // I don't really know when Invalidate was introduced
 		    self.TrueWindow.Refresh
 		  #else
 		    self.TrueWindow.Invalidate

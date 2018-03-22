@@ -461,7 +461,13 @@ Implements MessageReceiver
 	#tag MenuHandler
 		Function EditCut() As Boolean Handles EditCut.Action
 			dim c as new Clipboard
+			
+			#if EditFieldGlobals.Replace00With01
 			c.Text = me.SelText.ReplaceAll (Chr(1), Chr(0))
+			#else
+			c.Text = me.SelText
+			#endif
+			
 			me.SelText = ""
 			Redraw
 			Return true
@@ -513,7 +519,7 @@ Implements MessageReceiver
 		Protected Sub AutocompleteEOL()
 		  //get Autocomplete options from client window
 		  call fetchAutocompleteOptions
-		  if  CurrentAutocompleteOptions = nil then Return //nothing to autocomplete.
+		  if CurrentAutocompleteOptions = nil then Return //nothing to autocomplete.
 		  
 		  dim maxIndex as Integer = UBound(CurrentAutocompleteOptions.Options)
 		  dim firstMatch, longestCommonPrefix, currentPathComponent as String
@@ -568,7 +574,7 @@ Implements MessageReceiver
 		  //get all Autocomplete options for word
 		  
 		  call fetchAutocompleteOptions
-		  if  CurrentAutocompleteOptions = nil then Return //nothing to autocomplete
+		  if CurrentAutocompleteOptions = nil then Return //nothing to autocomplete
 		  if ubound(CurrentAutocompleteOptions.Options) < 0 then Return
 		  
 		  //find XY pos of caret
@@ -1026,11 +1032,7 @@ Implements MessageReceiver
 		  dim doubleClickTime, currentClickTicks as Integer
 		  
 		  #if targetMacOS then
-		    #if targetCarbon or TargetCocoa then
-		      Declare Function GetDblTime Lib "Carbon" () as Integer
-		    #else
-		      Declare Function GetDblTime Lib "InterfaceLib" () as Integer Inline68K("2EB802F0")
-		    #endif
+		    Declare Function GetDblTime Lib "Carbon" () as Integer
 		    doubleClickTime = GetDblTime()
 		    if doubleClickTime <= 0 then
 		      doubleClickTime = 30
@@ -1083,11 +1085,7 @@ Implements MessageReceiver
 		    dim doubleClickTime, currentClickTicks as Integer
 		    
 		    #if targetMacOS then
-		      #if targetCarbon or TargetCocoa then
-		        Declare Function GetDblTime Lib "Carbon" () as Integer
-		      #else
-		        Declare Function GetDblTime Lib "InterfaceLib" () as Integer Inline68K("2EB802F0")
-		      #endif
+		      Declare Function GetDblTime Lib "Carbon" () as Integer
 		      doubleClickTime = GetDblTime()
 		    #endif
 		    
@@ -1191,8 +1189,12 @@ Implements MessageReceiver
 		Sub Copy()
 		  if SelLength = 0 then Return
 		  dim c as new Clipboard
-		  c.Text = me.SelText.ReplaceAll (Chr(1), Chr(0))
 		  
+		  #if EditFieldGlobals.Replace00With01
+		    c.Text = me.SelText.ReplaceAll (Chr(1), Chr(0))
+		  #else
+		    c.Text = me.SelText
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -3414,7 +3416,9 @@ Implements MessageReceiver
 		    t = LTrimLines(t)
 		  end
 		  
-		  t = t.ReplaceAll (Chr(0), Chr(1))
+		  #if EditFieldGlobals.Replace00With01
+		    t = t.ReplaceAll (Chr(0), Chr(1))
+		  #endif
 		  
 		  me.SelText = t
 		  

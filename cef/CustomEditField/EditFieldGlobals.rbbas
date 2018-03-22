@@ -94,13 +94,16 @@ Protected Module EditFieldGlobals
 	#tag EndProperty
 
 
-	#tag Constant, Name = CEF_VERSION, Type = String, Dynamic = False, Default = \"1.8.3", Scope = Protected
+	#tag Constant, Name = CEF_VERSION, Type = String, Dynamic = False, Default = \"1.8.4", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = DebugIndentation, Type = Boolean, Dynamic = False, Default = \"false", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = DebugTiming, Type = Boolean, Dynamic = False, Default = \"false", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = Replace00With01, Type = Boolean, Dynamic = False, Default = \"true", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = STORAGE_ARRAY, Type = Double, Dynamic = False, Default = \"1", Scope = Protected

@@ -274,6 +274,9 @@ Class LineManager
 	#tag Method, Flags = &h1
 		Protected Sub fixOffsets(lineNumber as integer, startOffset as integer)
 		  //fix all the offsets starting at the given line number, with the given offset
+		  
+		  #pragma DisableBackgroundTasks
+		  
 		  dim maxIndex as Integer = UBound(lines)
 		  dim line as TextLine
 		  

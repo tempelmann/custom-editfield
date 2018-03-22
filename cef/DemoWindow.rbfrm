@@ -1970,6 +1970,7 @@ End
 		  
 		  TestField.ReindentText // cleans up indentations, removing any leading blanks from the lines
 		  TestField.ResetUndo // needed so that the Reindentation doesn't become an undoable action
+		  SetWindowModified(false)
 		  
 		  // Add a few row icons at random lines.
 		  testField.LineIcon(rnd * testField.MaxVisibleLines) = rowicondata

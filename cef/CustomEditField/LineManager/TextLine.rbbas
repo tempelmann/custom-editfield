@@ -276,8 +276,12 @@ Inherits TextSegment
 		      end if
 		      text = storage.getText(selfWordOfs, word.length)
 		      
-		      // convert Chr(1), which we use for original NUL chars, to a "NUL" character for display
-		      text = text.ReplaceAll (Chr(1), "␀")
+		      #if EditFieldGlobals.Replace00With01
+		        // convert Chr(1), which we use for original NUL chars, to a "NUL" character for display
+		        text = text.ReplaceAll (Chr(1), "␀")
+		      #else
+		        text = text.ReplaceAll (Chr(0), "␀")
+		      #endif
 		    end if
 		    
 		    g.Bold = Word.bold or bold
