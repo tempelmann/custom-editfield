@@ -192,6 +192,11 @@ Class GapBuffer
 	#tag Method, Flags = &h0
 		Sub setText(text as string)
 		  //set the whole thing at once
+		  
+		  if text.Encoding=nil then //Text without encoding cannot be converted and will cause a break in MemoryBlockStorageWide.StringValue
+		    raise new TextHasNoEncodingException
+		  end if
+		  
 		  text = text.ConvertEncoding(EditFieldGlobals.InternalEncoding) ' make sure it's not in UTF-16
 		  buffer.Size = text.len
 		  buffer.StringValue(0, text.len) = text

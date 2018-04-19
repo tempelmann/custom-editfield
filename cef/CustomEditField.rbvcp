@@ -78,6 +78,7 @@ Folder=Debugging;Debugging;&h1CF30520;&h0;false
 Module=Debugging;Debugging/Debugging/Debugging.rbbas;&h16D5C85F;&h1CF30520;false
 Class=LifeTimer;Debugging/Debugging/LifeTimer.rbbas;&h2D562255;&h16D5C85F;false
 Class=AccumulationTimer;Debugging/Debugging/AccumulationTimer.rbbas;&h71E85359;&h16D5C85F;false
+Class=TextHasNoEncodingException;CustomEditField/TextStorage/TextHasNoEncodingException.rbbas;&h52195690;&h425CFEF8;false
 DefaultWindow=DemoWindow
 AppMenuBar=MenuBar1
 MajorVersion=1
