@@ -6,7 +6,7 @@
 					AppliesTo = 0
 					Destination = 1
 					Subdirectory = 
-					FolderItem = Li4vRGVmaW5pdGlvbnMv
+					FolderItem = Li4ARGVmaW5pdGlvbnM=
 				End
 			End
 			Begin BuildStepList Mac OS X
@@ -16,7 +16,7 @@
 					AppliesTo = 0
 					Destination = 1
 					Subdirectory = 
-					FolderItem = Li4vRGVmaW5pdGlvbnMv
+					FolderItem = Li4ARGVmaW5pdGlvbnM=
 				End
 				Begin IDEScriptBuildStep EnableRetinaSupport , AppliesTo = 0
 					// Adds a key to the Info.plist to enable Retina (HiDPI) resolition.
@@ -46,7 +46,7 @@
 					AppliesTo = 0
 					Destination = 1
 					Subdirectory = 
-					FolderItem = Li4vRGVmaW5pdGlvbnMv
+					FolderItem = Li4ARGVmaW5pdGlvbnM=
 				End
 			End
 #tag EndBuildAutomation
