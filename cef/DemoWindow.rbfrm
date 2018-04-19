@@ -202,7 +202,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   7
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Font:"
       TextAlign       =   2
       TextColor       =   0
@@ -268,7 +267,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   9
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Size:"
       TextAlign       =   2
       TextColor       =   0
@@ -377,7 +375,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   12
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Go to line:"
       TextAlign       =   2
       TextColor       =   0
@@ -472,7 +469,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   15
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Left Margin: 4px"
       TextAlign       =   0
       TextColor       =   0
@@ -507,7 +503,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   16
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Default Text Color:\r(no syntax, new lines only)"
       TextAlign       =   2
       TextColor       =   0
@@ -602,7 +597,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   20
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Border Color: "
       TextAlign       =   2
       TextColor       =   0
@@ -665,7 +659,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   22
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Back Color: "
       TextAlign       =   2
       TextColor       =   0
@@ -728,7 +721,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   24
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Line Numbers Color:"
       TextAlign       =   2
       TextColor       =   0
@@ -763,7 +755,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   26
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Caret Color: "
       TextAlign       =   2
       TextColor       =   0
@@ -854,7 +845,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   30
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Gutter Separation Color:"
       TextAlign       =   2
       TextColor       =   0
@@ -920,7 +910,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   32
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Syntax:"
       TextAlign       =   2
       TextColor       =   0
@@ -1227,7 +1216,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   28
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Gutter Back Color:"
       TextAlign       =   2
       TextColor       =   0
@@ -1365,7 +1353,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   44
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "px (0 for default)"
       TextAlign       =   0
       TextColor       =   0
@@ -1515,7 +1502,6 @@ Begin Window DemoWindow
       Selectable      =   False
       TabIndex        =   48
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Text Selection Color"
       TextAlign       =   2
       TextColor       =   0
@@ -1536,9 +1522,7 @@ Begin Window DemoWindow
       Left            =   13
       LockedInPosition=   False
       Scope           =   0
-      TabIndex        =   45
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   -58
       Visible         =   True
       Width           =   624
@@ -1730,7 +1714,6 @@ Begin Window DemoWindow
       Scope           =   0
       TabIndex        =   56
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   343
       TopLeftColor    =   &h000000
       Visible         =   True
@@ -1896,7 +1879,6 @@ Begin Window DemoWindow
          Selectable      =   False
          TabIndex        =   1
          TabPanelIndex   =   0
-         TabStop         =   True
          Text            =   "Spaces per Tab"
          TextAlign       =   0
          TextColor       =   0
@@ -1911,7 +1893,6 @@ Begin Window DemoWindow
       End
    End
    Begin Timer keepFocusInTextfieldTimer
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   -56
@@ -1919,11 +1900,8 @@ Begin Window DemoWindow
       Mode            =   2
       Period          =   500
       Scope           =   0
-      TabIndex        =   52
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   29
-      Visible         =   True
       Width           =   32
    End
 End
@@ -2767,7 +2745,12 @@ End
 		  me.RowTag(me.ListCount - 1) = nil
 		  
 		  dim defsFolder as FolderItem
-		  defsFolder = App.ResourcesFolder.Child("Definitions")
+		  #if DebugBuild
+		    defsFolder = GetFolderItem( "Definitions")
+		  #else
+		    defsFolder = App.ResourcesFolder.Child("Definitions")
+		  #endif
+		  
 		  if not defsFolder.Exists then
 		    // this is where we find it on Windows, usually
 		    defsFolder = GetFolderItem("").Parent.Child("Definitions")
