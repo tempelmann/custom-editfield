@@ -438,7 +438,7 @@ Implements MessageReceiver
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
 		  #pragma unused areas
 		  
-		  drawContents(g)
+		  drawContents(g, me.TrueWindow)
 		End Sub
 	#tag EndEvent
 
@@ -541,7 +541,7 @@ Implements MessageReceiver
 		    Return
 		  end if
 		  
-		  dim y as Integer
+		  dim y as Double
 		  XYAtCharPos(CaretPos, CaretLine, AutocompleteSuggestionInsertionX, y)
 		End Sub
 	#tag EndMethod
@@ -578,7 +578,7 @@ Implements MessageReceiver
 		  if ubound(CurrentAutocompleteOptions.Options) < 0 then Return
 		  
 		  //find XY pos of caret
-		  dim x,y, fx, fy as Integer
+		  dim x,y, fx, fy as Double
 		  XYAtCharPos(CaretPos, CaretLine, x,y)
 		  getFieldXY(fx, fy)
 		  x = x + fx
@@ -1222,7 +1222,7 @@ Implements MessageReceiver
 		  line = lines.getLine(openingLine)
 		  if line = nil then Return
 		  
-		  dim x, y1, y2 as Integer
+		  dim x, y1, y2 as Double
 		  XYAtCharPos(line.offset, openingLine, x, y1)
 		  
 		  dim closingLine as Integer = lines.nextBlockEndLine(openingLine)
@@ -1406,7 +1406,7 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub drawContents(gr as graphics)
+		Private Sub drawContents(gr as graphics, parentWindow as Window)
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    
@@ -1470,7 +1470,8 @@ Implements MessageReceiver
 		      // but on Mac OS it's not needed any more.
 		      // In fact, it would prevent Retina / HiDPI rendering from working. Therefore, for
 		      // Mac builds, we now draw directly into the Canvas by not creating this back buffer
-		      mBackBuffer = new Picture(gr.Width, gr.Height, 32)
+		      //mBackBuffer = new Picture(gr.Width, gr.Height, 32)
+		      mBackBuffer = parentWindow.BitmapForCaching(gr.Width, gr.Height)
 		    end if
 		    CalculateMaxHorizontalSB
 		    CalculateMaxVerticalSB
@@ -1616,7 +1617,7 @@ Implements MessageReceiver
 		        ranges.Append(MatchingBlockHighlight)
 		      end if
 		      
-		      dim x,y,w as Integer
+		      dim x,y,w as Double
 		      for each tmpSelection in ranges
 		        If tmpSelection.IsLineIndexInRange(lineIdx) then //if in selection, Highlight line
 		          
@@ -2041,7 +2042,7 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub getFieldXY(byref locx as integer, byref locy as integer)
+		Protected Sub getFieldXY(byref locx as Double, byref locy as Double)
 		  //find the window where this control is...
 		  //since the control can be deeeeeeep whithin container controls...
 		  locx=me.Left
@@ -3379,7 +3380,7 @@ Implements MessageReceiver
 		  caretState = not caretState
 		  if caretState then Return
 		  
-		  dim xpos, ypos as Integer
+		  dim xpos, ypos as Double
 		  
 		  if atPos = CaretPos then
 		    XYAtCharPos(atPos, CaretLine, xpos, ypos)
@@ -4528,7 +4529,7 @@ Implements MessageReceiver
 		  end if
 		  
 		  //horizontal check
-		  dim x, y as Integer
+		  dim x, y as Double
 		  XYAtCharPos(charPos, charLine, x, y)
 		  
 		  if x< LineNumOffset or  x >= self.Width then
@@ -4557,7 +4558,7 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub XYAtCharPos(charPos as integer, byref X as integer, byref Y as integer)
+		Sub XYAtCharPos(charPos as integer, byref X as Double, byref Y as Double)
 		  dim lineNumber as Integer
 		  lineNumber = lines.getLineNumberForOffset(charPos)
 		  XYAtCharPos(CharPos, LineNumber, x, y)
@@ -4565,7 +4566,7 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub XYAtCharPos(charPos as integer, lineNumber as integer, byref X as integer, byref Y as integer)
+		Protected Sub XYAtCharPos(charPos as integer, lineNumber as integer, byref X as Double, byref Y as Double)
 		  //find the screenx and screeny for the given CharPos
 		  
 		  //y
@@ -4862,7 +4863,7 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected AutocompleteSuggestionInsertionX As Integer
+		Protected AutocompleteSuggestionInsertionX As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -4886,11 +4887,11 @@ Implements MessageReceiver
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h1
-		Protected blockBeginPosX As Integer
+		Protected blockBeginPosX As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected blockBeginPosY As Integer
+		Protected blockBeginPosY As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -5020,7 +5021,7 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  dim x, y as Integer
+			  dim x, y as Double
 			  dim calcPos as Integer = desiredColumnCharPos
 			  
 			  //or the caretpos
@@ -6180,7 +6181,7 @@ Implements MessageReceiver
 			  mTextHeight = value
 			End Set
 		#tag EndSetter
-		TextHeight As Integer
+		TextHeight As Double
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -6848,7 +6849,7 @@ Implements MessageReceiver
 			Name="TextHeight"
 			Group="Behavior"
 			InitialValue="0"
-			Type="Integer"
+			Type="Double"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TextLength"
