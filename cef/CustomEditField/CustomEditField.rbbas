@@ -1198,8 +1198,11 @@ Implements MessageReceiver
 		    textToCopy = me.SelText
 		  #endif
 		  
-		  #if TargetWindows
-		    textToCopy = textToCopy.ReplaceAll(EndOfLine.Macintosh, EndOfLine.Windows)
+		  #if TargetWin32
+		    // As the Text() and SelText() functions use CR for line delimiters, we need to convert them into the native format here)
+		    textToCopy = textToCopy.ReplaceAll (me.LineDelimiter, EndOfLine.Windows)
+		  #elseif TargetLinux
+		    textToCopy = textToCopy.ReplaceAll (me.LineDelimiter, EndOfLine.Unix)
 		  #endif
 		  
 		  c.Text = textToCopy
@@ -1470,8 +1473,11 @@ Implements MessageReceiver
 		      // but on Mac OS it's not needed any more.
 		      // In fact, it would prevent Retina / HiDPI rendering from working. Therefore, for
 		      // Mac builds, we now draw directly into the Canvas by not creating this back buffer
-		      //mBackBuffer = new Picture(gr.Width, gr.Height, 32)
-		      mBackBuffer = parentWindow.BitmapForCaching(gr.Width, gr.Height)
+		      #if RBVersion < 2013
+		        mBackBuffer = new Picture(gr.Width, gr.Height, 32)
+		      #else
+		        mBackBuffer = parentWindow.BitmapForCaching(gr.Width, gr.Height)
+		      #endif
 		    end if
 		    CalculateMaxHorizontalSB
 		    CalculateMaxVerticalSB
@@ -2002,8 +2008,8 @@ Implements MessageReceiver
 		  
 		  Return SelStart
 		  
-		  Exception RegExSearchPatternException
-		    Return -1 //ignore these...
+		Exception RegExSearchPatternException
+		  Return -1 //ignore these...
 		End Function
 	#tag EndMethod
 
@@ -4387,6 +4393,8 @@ Implements MessageReceiver
 
 	#tag Method, Flags = &h0
 		Function Text(offset as Integer, length as Integer) As String
+		  // Attention: Returned line delimiters will be CR, i.e. chr(13), by default and not CR+LF or LF, even on Windows and Linux!
+		  
 		  if offset >= 0 and length > 0 then
 		    Return TextStorage.getText(offset, length)
 		  end if
@@ -5998,6 +6006,8 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  // Attention: Returned line delimiters will be CR, i.e. chr(13), by default and not CR+LF or LF, even on Windows and Linux!
+			  
 			  Return TextStorage.getText(selStart, selLength)
 			End Get
 		#tag EndGetter
@@ -6072,6 +6082,8 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  // Attention: Returned line delimiters will be CR, i.e. chr(13), by default and not CR+LF or LF, even on Windows and Linux!
+			  
 			  Return textStorage.getText(0, textStorage.Length)
 			End Get
 		#tag EndGetter
@@ -6381,24 +6393,18 @@ Implements MessageReceiver
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="Transparent"
-			Visible=true
-			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
-			EditorType="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="AcceptFocus"
 			Visible=true
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AcceptTabs"
 			Visible=true
 			Group="Behavior"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoCloseBrackets"
@@ -6420,6 +6426,7 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoIndentNewLines"
@@ -6441,6 +6448,7 @@ Implements MessageReceiver
 			Group="Appearance"
 			Type="Picture"
 			EditorType="Picture"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Border"
@@ -6532,8 +6540,11 @@ Implements MessageReceiver
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DoubleBuffer"
+			Visible=true
 			Group="Behavior"
+			InitialValue="False"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EnableAutocomplete"
@@ -6548,6 +6559,7 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EnableLineFoldings"
@@ -6567,7 +6579,7 @@ Implements MessageReceiver
 			Group="Behavior"
 			InitialValue="True"
 			Type="Boolean"
-			EditorType="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="GutterBackgroundColor"
@@ -6596,6 +6608,7 @@ Implements MessageReceiver
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HelpTag"
@@ -6603,6 +6616,7 @@ Implements MessageReceiver
 			Group="Appearance"
 			Type="String"
 			EditorType="MultiLineEditor"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HighlightBlocksOnMouseOverGutter"
@@ -6654,12 +6668,11 @@ Implements MessageReceiver
 			Visible=true
 			Group="ID"
 			Type="Integer"
-			EditorType="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InitialParent"
-			Group="Initial State"
-			Type="String"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="KeepEntireTextIndented"
@@ -6672,6 +6685,7 @@ Implements MessageReceiver
 			Visible=true
 			Group="Position"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="leftMarginOffset"
@@ -6707,24 +6721,28 @@ Implements MessageReceiver
 			Visible=true
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockTop"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="MaxVisibleLines"
@@ -6737,7 +6755,7 @@ Implements MessageReceiver
 			Visible=true
 			Group="ID"
 			Type="String"
-			EditorType="String"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ReadOnly"
@@ -6794,8 +6812,7 @@ Implements MessageReceiver
 			Name="Super"
 			Visible=true
 			Group="ID"
-			Type="String"
-			EditorType="String"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabIndex"
@@ -6803,12 +6820,14 @@ Implements MessageReceiver
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabPanelIndex"
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabStop"
@@ -6816,6 +6835,7 @@ Implements MessageReceiver
 			Group="Position"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabWidth"
@@ -6883,6 +6903,7 @@ Implements MessageReceiver
 			Visible=true
 			Group="Position"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UseFocusRing"
@@ -6890,6 +6911,7 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Visible"
@@ -6897,6 +6919,7 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Width"
@@ -6904,6 +6927,7 @@ Implements MessageReceiver
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
