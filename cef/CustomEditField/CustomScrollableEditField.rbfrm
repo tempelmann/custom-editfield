@@ -3,8 +3,10 @@ Begin ContainerControl CustomScrollableEditField
    AcceptFocus     =   True
    AcceptTabs      =   False
    AutoDeactivate  =   True
-   BackColor       =   16777215
+   BackColor       =   &cFFFFFF00
    Backdrop        =   0
+   Compatibility   =   ""
+   DoubleBuffer    =   False
    Enabled         =   True
    EraseBackground =   True
    HasBackColor    =   False
@@ -20,44 +22,45 @@ Begin ContainerControl CustomScrollableEditField
    TabPanelIndex   =   0
    TabStop         =   False
    Top             =   32
+   Transparent     =   True
    UseFocusRing    =   True
    Visible         =   True
    Width           =   208
    Begin CustomEditField contentField
       AcceptFocus     =   False
       AcceptTabs      =   False
-      AutoCloseBrackets=   false
-      AutocompleteAppliesStandardCase=   true
+      AutoCloseBrackets=   False
+      AutocompleteAppliesStandardCase=   True
       AutoDeactivate  =   True
-      AutoIndentNewLines=   true
-      BackColor       =   "&cffffff"
+      AutoIndentNewLines=   True
+      BackColor       =   &cFFFFFF00
       Backdrop        =   0
-      Border          =   true
-      BorderColor     =   &h888888
-      BracketHighlightColor=   "&cFFFF00"
-      CaretColor      =   "&c000000"
+      Border          =   True
+      BorderColor     =   &c88888800
+      BracketHighlightColor=   &cFFFF0000
+      CaretColor      =   &c00000000
       CaretLine       =   0
       CaretPos        =   0
-      ClearHighlightedRangesOnTextChange=   true
-      DirtyLinesColor =   "&cFF9999"
+      ClearHighlightedRangesOnTextChange=   True
+      DirtyLinesColor =   &cFF999900
       disableReset    =   False
       DisplayDirtyLines=   True
       DisplayInvisibleCharacters=   False
       DisplayLineNumbers=   True
-      DisplayRightMarginMarker=   false
+      DisplayRightMarginMarker=   False
       DoubleBuffer    =   False
       EnableAutocomplete=   True
       Enabled         =   True
       EnableLineFoldings=   False
       enableLineFoldingSetting=   False
       EraseBackground =   False
-      GutterBackgroundColor=   "&cEEEEEE"
-      GutterSeparationLineColor=   "&c888888"
+      GutterBackgroundColor=   &cEEEEEE00
+      GutterSeparationLineColor=   &c88888800
       GutterWidth     =   0
       Height          =   102
       HelpTag         =   ""
-      HighlightBlocksOnMouseOverGutter=   true
-      HighlightMatchingBrackets=   true
+      HighlightBlocksOnMouseOverGutter=   True
+      HighlightMatchingBrackets=   True
       HighlightMatchingBracketsMode=   0
       ignoreRepaint   =   False
       IndentPixels    =   16
@@ -67,7 +70,7 @@ Begin ContainerControl CustomScrollableEditField
       KeepEntireTextIndented=   False
       Left            =   0
       leftMarginOffset=   4
-      LineNumbersColor=   "&c888888"
+      LineNumbersColor=   &c88888800
       LineNumbersTextFont=   "System"
       LineNumbersTextSize=   9
       LockBottom      =   True
@@ -90,20 +93,21 @@ Begin ContainerControl CustomScrollableEditField
       TabStop         =   True
       TabWidth        =   0
       Text            =   ""
-      TextColor       =   &h000000
+      TextColor       =   &c00000000
       TextFont        =   "System"
-      TextHeight      =   0
+      TextHeight      =   0.0
       TextLength      =   0
-      TextSelectionColor=   &h000000
+      TextSelectionColor=   &c00000000
       TextSize        =   0
-      ThickInsertionPoint=   true
+      ThickInsertionPoint=   True
       Top             =   0
+      Transparent     =   True
       UseFocusRing    =   False
       Visible         =   True
       Width           =   192
    End
    Begin ScrollBar vScrollBar
-      AcceptFocus     =   true
+      AcceptFocus     =   True
       AutoDeactivate  =   True
       Enabled         =   True
       Height          =   102
@@ -126,12 +130,13 @@ Begin ContainerControl CustomScrollableEditField
       TabPanelIndex   =   0
       TabStop         =   True
       Top             =   0
+      Transparent     =   True
       Value           =   0
       Visible         =   True
       Width           =   16
    End
    Begin ScrollBar hScrollBar
-      AcceptFocus     =   true
+      AcceptFocus     =   True
       AutoDeactivate  =   True
       Enabled         =   True
       Height          =   16
@@ -154,22 +159,19 @@ Begin ContainerControl CustomScrollableEditField
       TabPanelIndex   =   0
       TabStop         =   True
       Top             =   102
+      Transparent     =   True
       Value           =   0
       Visible         =   True
       Width           =   192
    End
    Begin Timer SelChangeDeferrer
-      Height          =   32
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   -44
       LockedInPosition=   False
       Mode            =   0
       Period          =   0
       Scope           =   0
       TabPanelIndex   =   0
-      Top             =   0
-      Width           =   32
    End
 End
 #tag EndWindow
@@ -781,7 +783,7 @@ End
 
 	#tag Method, Flags = &h0
 		Function VerticalOffset(line_0 as Integer, findTop as Boolean) As Integer
-		  dim x, y, charPos as Integer
+		  dim x, y, charPos as Double
 		  if line_0 >= 0 then
 		    charPos = contentField.CharPosAtLineNum (line_0)
 		    if charPos < 0 then
@@ -803,7 +805,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub XYAtCharPos(charPos as integer, byref X as integer, byref Y as integer)
+		Sub XYAtCharPos(charPos as integer, byref X as Double, byref Y as Double)
 		  contentField.XYAtCharPos(CharPos, x, y)
 		End Sub
 	#tag EndMethod
@@ -1822,3 +1824,409 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag ViewBehavior
+	#tag ViewProperty
+		Name="Name"
+		Visible=true
+		Group="ID"
+		Type="String"
+		EditorType="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Super"
+		Visible=true
+		Group="ID"
+		Type="String"
+		EditorType="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Width"
+		Visible=true
+		Group="Size"
+		InitialValue="300"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Height"
+		Visible=true
+		Group="Size"
+		InitialValue="300"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="InitialParent"
+		Group="Position"
+		Type="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Left"
+		Visible=true
+		Group="Position"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Top"
+		Visible=true
+		Group="Position"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LockLeft"
+		Visible=true
+		Group="Position"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LockTop"
+		Visible=true
+		Group="Position"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LockRight"
+		Visible=true
+		Group="Position"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LockBottom"
+		Visible=true
+		Group="Position"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TabPanelIndex"
+		Group="Position"
+		InitialValue="0"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TabIndex"
+		Visible=true
+		Group="Position"
+		InitialValue="0"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TabStop"
+		Visible=true
+		Group="Position"
+		InitialValue="True"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Visible"
+		Visible=true
+		Group="Appearance"
+		InitialValue="True"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Enabled"
+		Visible=true
+		Group="Appearance"
+		InitialValue="True"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="AutoDeactivate"
+		Visible=true
+		Group="Appearance"
+		InitialValue="True"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="HelpTag"
+		Visible=true
+		Group="Appearance"
+		Type="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="UseFocusRing"
+		Visible=true
+		Group="Appearance"
+		InitialValue="False"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="HasBackColor"
+		Visible=true
+		Group="Background"
+		InitialValue="False"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="BackColor"
+		Visible=true
+		Group="Background"
+		InitialValue="&hFFFFFF"
+		Type="Color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Backdrop"
+		Visible=true
+		Group="Background"
+		Type="Picture"
+		EditorType="Picture"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="AcceptFocus"
+		Visible=true
+		Group="Behavior"
+		InitialValue="False"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="AcceptTabs"
+		Visible=true
+		Group="Behavior"
+		InitialValue="True"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="EraseBackground"
+		Group="Behavior"
+		InitialValue="True"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Transparent"
+		Visible=true
+		Group="Behavior"
+		InitialValue="True"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="DoubleBuffer"
+		Visible=true
+		Group="Windows Behavior"
+		InitialValue="False"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="AutoCloseBrackets"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="AutocompleteAppliesStandardCase"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="AutoIndentNewLines"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Border"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="BorderColor"
+		Group="Behavior"
+		InitialValue="&c000000"
+		Type="color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="CaretColor"
+		Group="Behavior"
+		InitialValue="&c000000"
+		Type="color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="CaretPos"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="ClearHighlightedRangesOnTextChange"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="DirtyLinesColor"
+		Group="Behavior"
+		InitialValue="&c000000"
+		Type="color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="DisplayDirtyLines"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="DisplayInvisibleCharacters"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="DisplayLineNumbers"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="DisplayRightMarginMarker"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="EnableAutocomplete"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="EnableLineFoldings"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="GutterBackgroundColor"
+		Group="Behavior"
+		InitialValue="&c000000"
+		Type="color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="GutterSeparationLineColor"
+		Group="Behavior"
+		InitialValue="&c000000"
+		Type="Color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="GutterWidth"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="HighlightMatchingBrackets"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="HighlightMatchingBracketsMode"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LeftMarginOffset"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LineNumbersColor"
+		Group="Behavior"
+		InitialValue="&c000000"
+		Type="color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LineNumbersTextFont"
+		Group="Behavior"
+		Type="string"
+		EditorType="MultiLineEditor"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LineNumbersTextSize"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="MaxVisibleLines"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="RighScrollMargin"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="RightMarginAtPixel"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="ScrollPosition"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="ScrollPositionX"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="SelLength"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="SelStart"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="SelText"
+		Group="Behavior"
+		Type="string"
+		EditorType="MultiLineEditor"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TabWidth"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="Text"
+		Group="Behavior"
+		Type="String"
+		EditorType="MultiLineEditor"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TextColor"
+		Group="Behavior"
+		InitialValue="&c000000"
+		Type="color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TextFont"
+		Group="Behavior"
+		Type="string"
+		EditorType="MultiLineEditor"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TextHeight"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TextLength"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TextSelectionColor"
+		Group="Behavior"
+		InitialValue="&c000000"
+		Type="color"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="TextSize"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="ThickInsertionPoint"
+		Group="Behavior"
+		Type="boolean"
+	#tag EndViewProperty
+#tag EndViewBehavior

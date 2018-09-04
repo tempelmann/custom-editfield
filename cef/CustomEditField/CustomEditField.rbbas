@@ -438,7 +438,7 @@ Implements MessageReceiver
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
 		  #pragma unused areas
 		  
-		  drawContents(g)
+		  drawContents(g, me.TrueWindow)
 		End Sub
 	#tag EndEvent
 
@@ -541,7 +541,7 @@ Implements MessageReceiver
 		    Return
 		  end if
 		  
-		  dim y as Integer
+		  dim y as Double
 		  XYAtCharPos(CaretPos, CaretLine, AutocompleteSuggestionInsertionX, y)
 		End Sub
 	#tag EndMethod
@@ -578,7 +578,7 @@ Implements MessageReceiver
 		  if ubound(CurrentAutocompleteOptions.Options) < 0 then Return
 		  
 		  //find XY pos of caret
-		  dim x,y, fx, fy as Integer
+		  dim x,y, fx, fy as Double
 		  XYAtCharPos(CaretPos, CaretLine, x,y)
 		  getFieldXY(fx, fy)
 		  x = x + fx
@@ -1190,11 +1190,19 @@ Implements MessageReceiver
 		  if SelLength = 0 then Return
 		  dim c as new Clipboard
 		  
+		  Dim textToCopy as String
+		  
 		  #if EditFieldGlobals.Replace00With01
-		    c.Text = me.SelText.ReplaceAll (Chr(1), Chr(0))
+		    textToCopy = me.SelText.ReplaceAll (Chr(1), Chr(0))
 		  #else
-		    c.Text = me.SelText
+		    textToCopy = me.SelText
 		  #endif
+		  
+		  #if TargetWindows
+		    textToCopy = textToCopy.ReplaceAll(EndOfLine.Macintosh, EndOfLine.Windows)
+		  #endif
+		  
+		  c.Text = textToCopy
 		End Sub
 	#tag EndMethod
 
@@ -1214,7 +1222,7 @@ Implements MessageReceiver
 		  line = lines.getLine(openingLine)
 		  if line = nil then Return
 		  
-		  dim x, y1, y2 as Integer
+		  dim x, y1, y2 as Double
 		  XYAtCharPos(line.offset, openingLine, x, y1)
 		  
 		  dim closingLine as Integer = lines.nextBlockEndLine(openingLine)
@@ -1398,7 +1406,7 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub drawContents(gr as graphics)
+		Private Sub drawContents(gr as graphics, parentWindow as Window)
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    
@@ -1462,7 +1470,8 @@ Implements MessageReceiver
 		      // but on Mac OS it's not needed any more.
 		      // In fact, it would prevent Retina / HiDPI rendering from working. Therefore, for
 		      // Mac builds, we now draw directly into the Canvas by not creating this back buffer
-		      mBackBuffer = new Picture(gr.Width, gr.Height, 32)
+		      //mBackBuffer = new Picture(gr.Width, gr.Height, 32)
+		      mBackBuffer = parentWindow.BitmapForCaching(gr.Width, gr.Height)
 		    end if
 		    CalculateMaxHorizontalSB
 		    CalculateMaxVerticalSB
@@ -1608,7 +1617,7 @@ Implements MessageReceiver
 		        ranges.Append(MatchingBlockHighlight)
 		      end if
 		      
-		      dim x,y,w as Integer
+		      dim x,y,w as Double
 		      for each tmpSelection in ranges
 		        If tmpSelection.IsLineIndexInRange(lineIdx) then //if in selection, Highlight line
 		          
@@ -1993,8 +2002,8 @@ Implements MessageReceiver
 		  
 		  Return SelStart
 		  
-		Exception RegExSearchPatternException
-		  Return -1 //ignore these...
+		  Exception RegExSearchPatternException
+		    Return -1 //ignore these...
 		End Function
 	#tag EndMethod
 
@@ -2033,7 +2042,7 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub getFieldXY(byref locx as integer, byref locy as integer)
+		Protected Sub getFieldXY(byref locx as Double, byref locy as Double)
 		  //find the window where this control is...
 		  //since the control can be deeeeeeep whithin container controls...
 		  locx=me.Left
@@ -2177,6 +2186,7 @@ Implements MessageReceiver
 		  const HOME_KEY = 1
 		  const END_KEY = 4
 		  const ESC_KEY = 27
+		  const TAB_KEY = 9
 		  
 		  dim keyAsc as Integer = asc(key)
 		  
@@ -2263,7 +2273,7 @@ Implements MessageReceiver
 		    AutocompleteManual
 		    
 		    // ignore any control chars (includes Esc)
-		  elseif keyAsc <= 31 and keyAsc <> 13 then
+		  elseif keyAsc <= 31 and keyAsc <> 13  and  not (keyAsc = TAB_KEY and not KeepEntireTextIndented and not IndentVisually ) then
 		    ignoreRepaint = False
 		    Return False
 		    
@@ -3370,7 +3380,7 @@ Implements MessageReceiver
 		  caretState = not caretState
 		  if caretState then Return
 		  
-		  dim xpos, ypos as Integer
+		  dim xpos, ypos as Double
 		  
 		  if atPos = CaretPos then
 		    XYAtCharPos(atPos, CaretLine, xpos, ypos)
@@ -4519,7 +4529,7 @@ Implements MessageReceiver
 		  end if
 		  
 		  //horizontal check
-		  dim x, y as Integer
+		  dim x, y as Double
 		  XYAtCharPos(charPos, charLine, x, y)
 		  
 		  if x< LineNumOffset or  x >= self.Width then
@@ -4548,7 +4558,7 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub XYAtCharPos(charPos as integer, byref X as integer, byref Y as integer)
+		Sub XYAtCharPos(charPos as integer, byref X as Double, byref Y as Double)
 		  dim lineNumber as Integer
 		  lineNumber = lines.getLineNumberForOffset(charPos)
 		  XYAtCharPos(CharPos, LineNumber, x, y)
@@ -4556,7 +4566,7 @@ Implements MessageReceiver
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub XYAtCharPos(charPos as integer, lineNumber as integer, byref X as integer, byref Y as integer)
+		Protected Sub XYAtCharPos(charPos as integer, lineNumber as integer, byref X as Double, byref Y as Double)
 		  //find the screenx and screeny for the given CharPos
 		  
 		  //y
@@ -4853,7 +4863,7 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected AutocompleteSuggestionInsertionX As Integer
+		Protected AutocompleteSuggestionInsertionX As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -4877,11 +4887,11 @@ Implements MessageReceiver
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h1
-		Protected blockBeginPosX As Integer
+		Protected blockBeginPosX As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected blockBeginPosY As Integer
+		Protected blockBeginPosY As Double
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -5011,7 +5021,7 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  dim x, y as Integer
+			  dim x, y as Double
 			  dim calcPos as Integer = desiredColumnCharPos
 			  
 			  //or the caretpos
@@ -6171,7 +6181,7 @@ Implements MessageReceiver
 			  mTextHeight = value
 			End Set
 		#tag EndSetter
-		TextHeight As Integer
+		TextHeight As Double
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -6371,18 +6381,24 @@ Implements MessageReceiver
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Transparent"
+			Visible=true
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="AcceptFocus"
 			Visible=true
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AcceptTabs"
 			Visible=true
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoCloseBrackets"
@@ -6404,7 +6420,6 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoIndentNewLines"
@@ -6426,7 +6441,6 @@ Implements MessageReceiver
 			Group="Appearance"
 			Type="Picture"
 			EditorType="Picture"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Border"
@@ -6520,7 +6534,6 @@ Implements MessageReceiver
 			Name="DoubleBuffer"
 			Group="Behavior"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EnableAutocomplete"
@@ -6535,7 +6548,6 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EnableLineFoldings"
@@ -6555,7 +6567,7 @@ Implements MessageReceiver
 			Group="Behavior"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="GutterBackgroundColor"
@@ -6584,7 +6596,6 @@ Implements MessageReceiver
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HelpTag"
@@ -6592,7 +6603,6 @@ Implements MessageReceiver
 			Group="Appearance"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HighlightBlocksOnMouseOverGutter"
@@ -6644,12 +6654,12 @@ Implements MessageReceiver
 			Visible=true
 			Group="ID"
 			Type="Integer"
-			InheritedFrom="Canvas"
+			EditorType="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InitialParent"
 			Group="Initial State"
-			InheritedFrom="Canvas"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="KeepEntireTextIndented"
@@ -6662,7 +6672,6 @@ Implements MessageReceiver
 			Visible=true
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="leftMarginOffset"
@@ -6698,28 +6707,24 @@ Implements MessageReceiver
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockTop"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="MaxVisibleLines"
@@ -6732,7 +6737,7 @@ Implements MessageReceiver
 			Visible=true
 			Group="ID"
 			Type="String"
-			InheritedFrom="Canvas"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ReadOnly"
@@ -6789,7 +6794,8 @@ Implements MessageReceiver
 			Name="Super"
 			Visible=true
 			Group="ID"
-			InheritedFrom="Canvas"
+			Type="String"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabIndex"
@@ -6797,14 +6803,12 @@ Implements MessageReceiver
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabPanelIndex"
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabStop"
@@ -6812,7 +6816,6 @@ Implements MessageReceiver
 			Group="Position"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabWidth"
@@ -6846,7 +6849,7 @@ Implements MessageReceiver
 			Name="TextHeight"
 			Group="Behavior"
 			InitialValue="0"
-			Type="Integer"
+			Type="Double"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TextLength"
@@ -6880,7 +6883,6 @@ Implements MessageReceiver
 			Visible=true
 			Group="Position"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="UseFocusRing"
@@ -6888,7 +6890,6 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Visible"
@@ -6896,7 +6897,6 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Width"
@@ -6904,7 +6904,6 @@ Implements MessageReceiver
 			Group="Position"
 			InitialValue="100"
 			Type="Integer"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
