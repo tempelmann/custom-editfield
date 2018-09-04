@@ -2185,6 +2185,7 @@ Implements MessageReceiver
 		  const HOME_KEY = 1
 		  const END_KEY = 4
 		  const ESC_KEY = 27
+		  const TAB_KEY = 9
 		  
 		  dim keyAsc as Integer = asc(key)
 		  
@@ -2271,7 +2272,7 @@ Implements MessageReceiver
 		    AutocompleteManual
 		    
 		    // ignore any control chars (includes Esc)
-		  elseif keyAsc <= 31 and keyAsc <> 13 then
+		  elseif keyAsc <= 31 and keyAsc <> 13  and  not (keyAsc = TAB_KEY and not KeepEntireTextIndented and not IndentVisually ) then
 		    ignoreRepaint = False
 		    Return False
 		    
