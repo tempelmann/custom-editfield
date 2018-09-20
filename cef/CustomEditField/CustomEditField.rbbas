@@ -1526,7 +1526,13 @@ Implements MessageReceiver
 		    else
 		      // use separate graphics buffer for gutter
 		      if Gutter = nil or Gutter.Height <> g.Height or gutter.Width <> gutterWidth then
-		        Gutter = New Picture(gutterWidth, g.Height, 32)
+		        
+		        #if RBVersion < 2013
+		          Gutter = New Picture(gutterWidth, g.Height, 32)
+		        #else
+		          Gutter = parentWindow.BitmapForCaching(gutterWidth, g.Height)
+		        #endif
+		        
 		        gg = gutter.Graphics
 		        #if EditFieldGlobals.UseOldRenderer
 		          gg.UseOldRenderer = true
@@ -6617,7 +6623,6 @@ Implements MessageReceiver
 			Group="Appearance"
 			Type="String"
 			EditorType="MultiLineEditor"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HighlightBlocksOnMouseOverGutter"
