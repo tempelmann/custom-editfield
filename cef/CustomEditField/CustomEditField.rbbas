@@ -3782,7 +3782,7 @@ Implements MessageReceiver
 		    #pragma unused height
 		    
 		    // Draw directly, without the Paint event
-		    drawContents(Graphics)
+		    drawContents (Graphics, self.TrueWindow)
 		  #endif
 		  
 		End Sub
