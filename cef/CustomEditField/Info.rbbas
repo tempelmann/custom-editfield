@@ -41,7 +41,7 @@ Protected Module Info
 	#tag Note, Name = 2. Release Notes
 		See here:
 		
-		  http://github.com/tempelmann/custom-editfield
+		  https://github.com/tempelmann/custom-editfield/commits/master
 	#tag EndNote
 
 	#tag Note, Name = 3. Docs
@@ -534,7 +534,7 @@ Protected Module Info
 	#tag Note, Name = 5. Issues and Bugs
 		To report issues go here:
 		
-		  http://github.com/tempelmann/custom-editfield
+		  https://github.com/tempelmann/custom-editfield/issues
 	#tag EndNote
 
 
