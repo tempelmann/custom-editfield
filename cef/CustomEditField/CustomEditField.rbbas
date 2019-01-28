@@ -4411,11 +4411,20 @@ Implements MessageReceiver
 		Protected Function tmpPicture() As picture
 		  //return a temporary picture.
 		  if sharedTmpPicture = nil then
-		    sharedTmpPicture = New Picture(2,2,32)
-		    #if EditFieldGlobals.UseOldRenderer
-		      sharedTmpPicture.Graphics.UseOldRenderer = true
-		    #endif
-		  end if
+  
+				#if RBVersion < 2013
+					sharedTmpPicture = New Picture(2,2,32)
+				#else
+					// We avoid horrible letter width calculation errors on Windows by creating
+					// the new style of Picture Object
+					sharedTmpPicture = New Picture(2,2) 
+				#endif
+					
+				#if EditFieldGlobals.UseOldRenderer
+					sharedTmpPicture.Graphics.UseOldRenderer = true
+				#endif
+			end if
+
 		  
 		  sharedTmpPicture.Graphics.TextFont = TextFont
 		  sharedTmpPicture.Graphics.TextSize = TextSize
