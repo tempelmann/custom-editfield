@@ -2300,9 +2300,17 @@ Implements MessageReceiver
 		    if not typing or CurrentEventID = 0  or ticks > CurrentEventID + (60 * UNDO_EVT_BLOCK_SECS) then CurrentEventID = Ticks
 		    typing = true
 		    
-		    //if there's a selection, replace it
+		    //if there's a selection, we indent all selected lines unless if we are in keep indented mode then we replace
 		    if me.SelLength > 0 then
-		      private_replace(selStart , me.SelLength, key)
+		      if not me.KeepEntireTextIndented then
+		        
+		        Dim startLineNumber as Integer = me.LineNumAtCharPos(SelStart)
+		        Dim endLineNumber as Integer = me.LineNumAtCharPos(SelStart + SelLength)
+		        
+		        IndentLines(startLineNumber, endLineNumber,not Keyboard.ShiftKey)
+		      else
+		        private_replace(selStart , me.SelLength, key)
+		      end if
 		    else
 		      //see if we need to Autocomplete brackets
 		      dim bracketInserted as Boolean
@@ -2539,6 +2547,51 @@ Implements MessageReceiver
 		    break
 		    beep
 		  end
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub IndentLines(fromLine as Integer, toLine as integer, addIndent as Boolean)
+		  dim lock as new LinesLock(self) // prevents LineHighlighter from interfering while we're modifying the lines
+		  #pragma unused lock
+		  
+		  #if DebugBuild and (EditFieldGlobals.DebugTiming or EditFieldGlobals.DebugIndentation)
+		    dim runtimer as new Debugging.LifeTimer("ReindentText "+str(fromLine)+" to "+str(toLine))
+		  #endif
+		  
+		  if CurrentEventID <= 0 then
+		    // ensure that this entire process becomes a single undoable action
+		    CurrentEventID = Ticks
+		  end if
+		  
+		  dim needsRedraw as Boolean
+		  
+		  self.IgnoreRepaint = true
+		  dim state as Variant
+		  for i as Integer = fromLine to toLine
+		    dim line as TextLine = lines.getLine (i)
+		    
+		    if line = nil then
+		      Continue
+		    end
+		    
+		    if addIndent then
+		      private_replace (line.offset, 0, Chr(9), false, CurrentEventID, true, true)
+		    else
+		      if TextStorage.getText(line.offset, 1) = Chr(9) then
+		        private_replace (line.offset, 1, "", false, CurrentEventID, true, true)
+		      end if
+		    end if
+		    line.IsDirty = true
+		    
+		    needsRedraw = true
+		  next
+		  self.IgnoreRepaint = False
+		  
+		  if needsRedraw then
+		    Highlight
+		  end
+		  
 		End Sub
 	#tag EndMethod
 
@@ -4411,11 +4464,20 @@ Implements MessageReceiver
 		Protected Function tmpPicture() As picture
 		  //return a temporary picture.
 		  if sharedTmpPicture = nil then
-		    sharedTmpPicture = New Picture(2,2,32)
+		    
+		    #if RBVersion < 2013
+		      sharedTmpPicture = New Picture(2,2,32)
+		    #else
+		      // We avoid horrible letter width calculation errors on Windows by creating
+		      // the new style of Picture Object
+		      sharedTmpPicture = New Picture(2,2) 
+		    #endif
+		    
 		    #if EditFieldGlobals.UseOldRenderer
 		      sharedTmpPicture.Graphics.UseOldRenderer = true
 		    #endif
 		  end if
+		  
 		  
 		  sharedTmpPicture.Graphics.TextFont = TextFont
 		  sharedTmpPicture.Graphics.TextSize = TextSize
@@ -6550,7 +6612,6 @@ Implements MessageReceiver
 			Group="Behavior"
 			InitialValue="False"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EnableAutocomplete"
@@ -6565,7 +6626,6 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
-			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EnableLineFoldings"
