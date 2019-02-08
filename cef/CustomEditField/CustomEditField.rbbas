@@ -2302,7 +2302,7 @@ Implements MessageReceiver
 		    
 		    //if there's a selection, we indent all selected lines unless if we are in keep indented mode then we replace
 		    if me.SelLength > 0 then
-		      if not me.KeepEntireTextIndented then
+		      if not me.KeepEntireTextIndented and keyAsc = TAB_KEY then then
 		        
 		        Dim startLineNumber as Integer = me.LineNumAtCharPos(SelStart)
 		        Dim endLineNumber as Integer = me.LineNumAtCharPos(SelStart + SelLength)
