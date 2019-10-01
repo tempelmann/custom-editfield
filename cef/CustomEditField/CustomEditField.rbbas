@@ -4470,7 +4470,7 @@ Implements MessageReceiver
 		    #else
 		      // We avoid horrible letter width calculation errors on Windows by creating
 		      // the new style of Picture Object
-		      sharedTmpPicture = New Picture(2,2) 
+		      sharedTmpPicture = New Picture(2,2)
 		    #endif
 		    
 		    #if EditFieldGlobals.UseOldRenderer
@@ -4598,10 +4598,13 @@ Implements MessageReceiver
 		  vertical = self.ScrollPosition
 		  
 		  //vertical check
-		  if charLine < ScrollPosition then
+		  if charLine < vertical then
 		    vertical = charLine
-		  elseif charLine > ScrollPosition + VisibleLineRange.length - 2 then
-		    vertical = charLine - VisibleLineRange.length + 2
+		  else
+		    dim visibleLines as Integer = self.visibleAndHiddenLines - 1
+		    if visibleLines > 0 and (charLine - visibleLines > vertical) then
+		      vertical = charLine - visibleLines
+		    end if
 		  end if
 		  
 		  //horizontal check
@@ -4614,6 +4617,19 @@ Implements MessageReceiver
 		  
 		  changeScrollValues(horizontal, vertical)
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function visibleAndHiddenLines() As Integer
+		  // Includes the lines hidden by folding
+		  
+		  if EnableLineFoldings then
+		    return lines.invisibleLines + MaxVisibleLines
+		  else
+		    return MaxVisibleLines
+		  end if
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
@@ -5663,7 +5679,7 @@ Implements MessageReceiver
 			Careful:
 			This returns just the number of rows that fit into the Canvas.
 			This is not the same as the number of text lines that may be appearing in
-			the Canvas if line folding is used! (That value is in VisibleLineRange.length)
+			the Canvas if line folding is used! (Get that value from self.visibleAndHiddenLines)
 		#tag EndNote
 		#tag Getter
 			Get
@@ -6612,6 +6628,7 @@ Implements MessageReceiver
 			Group="Behavior"
 			InitialValue="False"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EnableAutocomplete"
@@ -6626,6 +6643,7 @@ Implements MessageReceiver
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			InheritedFrom="Canvas"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="EnableLineFoldings"
