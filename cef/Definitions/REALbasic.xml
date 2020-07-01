@@ -11,7 +11,7 @@
 	<blockEndMarker>^\s*end\s+class\b</blockEndMarker>
 
 <!-- everything else -->
-	<blockStartMarker indent="1">^\s*(?:(if|elseif)\b.*\sthen\b\s*(('|//)|(?!.+?))|if\s(?!.*\sthen\b)|^\s*(public\b|protected\b|private\b)?\s*(shared\b)?\s*(?&lt;!end\b)\s*(sub|function|property)\b|(do|for|while|select|case|try|catch|else|Get|Set|#if|#elseif|#else)\b)</blockStartMarker>
+	<blockStartMarker indent="1">^\s*(?:(if|elseif)\b.*\sthen\b\s*(('|//)|(?!.+?))|if\s(?!.*\sthen\b)|^\s*(public\b|protected\b|private\b)?\s*(shared\b)?\s*(?&lt;!end\b)\s*(sub|function|property)\b|(do|for|while|select|case|try|catch|else|enum|Get|Set|#if|#elseif|#else)\b)</blockStartMarker>
 	<blockEndMarker>^\s*(?:end|wend|next|loop|else|case|catch|elseif|#else|#elseif|#endif)\b</blockEndMarker>
 
 <!-- INTERFACE block - prevents anything inside an interface from being indented: -->
