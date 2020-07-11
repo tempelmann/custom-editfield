@@ -2,7 +2,7 @@
 Protected Module DragImage
 	#tag Method, Flags = &h21
 		Private Function NewCGImage(p as Picture) As Ptr
-		  #if targetMacOS
+		  #if targetMacOS and not Target64Bit and RBVersion < 2019.02
 		    if p is nil then
 		      return nil
 		    end if
@@ -51,16 +51,16 @@ Protected Module DragImage
 
 	#tag Method, Flags = &h0
 		Sub SetImage(extends d as Dragitem, p as Picture)
-		  #if targetMacOS and not Target64Bit
+		  #if targetMacOS and not Target64Bit and RBVersion < 2019.02
 		    dim theImage as Ptr = NewCGImage(p)
 		    if theImage = nil then
 		      return
 		    end if
 		    
-		    declare function SetDragImageWithCGImage lib "Carbon.framework" (inDrag as Integer, inCGImage as Ptr, inImageOffsetPt as Ptr, inImageFlags as UInt32) as Integer
+		    declare function SetDragImageWithCGImage lib CarbonFramework (inDrag as Integer, inCGImage as Ptr, inImageOffsetPt as Ptr, inImageFlags as UInt32) as Integer
 		    
-		    declare function CGImageGetHeight lib "Carbon.framework" (image as Ptr) as UInt32
-		    declare function CGImageGetWidth lib "Carbon.framework" (image as Ptr) as UInt32
+		    declare function CGImageGetHeight lib CarbonFramework (image as Ptr) as UInt32
+		    declare function CGImageGetWidth lib CarbonFramework (image as Ptr) as UInt32
 		    
 		    const sizeOfHIPoint = 8
 		    dim offset as new MemoryBlock(sizeOfHIPoint)
@@ -83,14 +83,14 @@ Protected Module DragImage
 		    #pragma unused p
 		  #endif
 		  
-		  finally // careful: any "return" above will not execute this finally block!
-		    #if targetMacOS and not Target64Bit
-		      declare sub CFRelease lib "Carbon.framework" (cf as Ptr)
-		      CFRelease theImage
-		    #endif
-		    
-		    
-		    
+		finally // careful: any "return" above will not execute this finally block!
+		  #if targetMacOS and not Target64Bit and RBVersion < 2019.02
+		    declare sub CFRelease lib CarbonFramework (cf as Ptr)
+		    CFRelease theImage
+		  #endif
+		  
+		  
+		  
 		End Sub
 	#tag EndMethod
 
