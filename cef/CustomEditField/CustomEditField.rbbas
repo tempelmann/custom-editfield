@@ -1027,34 +1027,10 @@ Implements MessageReceiver
 	#tag Method, Flags = &h21
 		Private Function checkDoubleClick(X as integer, Y as integer) As boolean
 		  //grabbed from RB examples
-		  //if SelLength > 0 then Return False
 		  
 		  dim doubleClickTime, currentClickTicks as Integer
 		  
-		  #if targetMacOS then
-		    Declare Function GetDblTime Lib "Carbon" () as Integer
-		    doubleClickTime = GetDblTime()
-		    if doubleClickTime <= 0 then
-		      doubleClickTime = 30
-		    end
-		  #endif
-		  
-		  #if targetWin32 then
-		    Declare Function GetDoubleClickTime Lib "User32.DLL" () as Integer
-		    doubleClickTime = GetDoubleClickTime()
-		    // DoubleClickTime now holds the number of milliseconds
-		    doubleClickTime = doubleClickTime / 1000.0 * 60 ' converted to Ticks
-		  #endif
-		  
-		  #if TargetLinux then
-		    Declare Function gtk_settings_get_default lib "libgtk-x11-2.0.so" as Ptr
-		    Declare Sub g_object_get lib "libgtk-x11-2.0.so" (Obj as Ptr, first_property_name as CString, byref doubleClicktime as Integer, Null as Integer)
-		    dim gtkSettings as MemoryBlock
-		    gtkSettings = gtk_settings_get_default()
-		    g_object_get(gtkSettings,"gtk-double-click-time",doubleClickTime, 0)
-		    // DoubleClickTime now holds the number of milliseconds
-		    doubleClickTime = doubleClickTime / 1000.0 * 60 ' converted to Ticks
-		  #endif
+		  doubleClickTime = getDoubleClickTimeTicks()
 		  
 		  dim result as Boolean = false
 		  currentClickTicks = ticks
@@ -1080,31 +1056,11 @@ Implements MessageReceiver
 	#tag Method, Flags = &h21
 		Private Function checkTripleClick(X as integer, Y as integer) As boolean
 		  //grabbed from RB examples
-		  //if SelLength > 0 then Return False
+		  
 		  if isDoubleClick = True then
 		    dim doubleClickTime, currentClickTicks as Integer
 		    
-		    #if targetMacOS then
-		      Declare Function GetDblTime Lib "Carbon" () as Integer
-		      doubleClickTime = GetDblTime()
-		    #endif
-		    
-		    #if targetWin32 then
-		      Declare Function GetDoubleClickTime Lib "User32.DLL" () as Integer
-		      doubleClickTime = GetDoubleClickTime()
-		      // DoubleClickTime now holds the number of milliseconds
-		      doubleClickTime = doubleClickTime / 1000.0 * 60 ' converted to Ticks
-		    #endif
-		    
-		    #if TargetLinux then
-		      Declare Function gtk_settings_get_default lib "libgtk-x11-2.0.so" as Ptr
-		      Declare Sub g_object_get lib "libgtk-x11-2.0.so" (Obj as Ptr, first_property_name as CString, byref doubleClicktime as Integer, Null as Integer)
-		      dim gtkSettings as MemoryBlock
-		      gtkSettings = gtk_settings_get_default()
-		      g_object_get(gtkSettings,"gtk-double-click-time",doubleClickTime, 0)
-		      // DoubleClickTime now holds the number of milliseconds
-		      doubleClickTime = doubleClickTime / 1000.0 * 60 ' converted to Ticks
-		    #endif
+		    doubleClickTime = getDoubleClickTimeTicks()
 		    
 		    dim result as Boolean = false
 		    currentClickTicks = ticks
@@ -2051,6 +2007,44 @@ Implements MessageReceiver
 		  mIgnoreRepaintCount = 0
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function getDoubleClickTimeTicks() As Integer
+		  dim doubleClickTime as Integer
+		  
+		  #if targetMacOS then
+		    Declare Function GetDblTime Lib "Carbon" () as Integer
+		    doubleClickTime = GetDblTime()
+		  #endif
+		  
+		  #if targetWin32 then
+		    Declare Function GetDoubleClickTime Lib "User32.DLL" () as Integer
+		    doubleClickTime = GetDoubleClickTime()
+		    // DoubleClickTime now holds the number of milliseconds
+		    doubleClickTime = doubleClickTime / 1000.0 * 60 ' converted to Ticks
+		  #endif
+		  
+		  #if TargetLinux then
+		    const libname = "libgtk-3"
+		    soft Declare Function gtk_settings_get_default lib libname () as Ptr
+		    soft Declare Sub g_object_get lib libname (Obj as Ptr, first_property_name as CString, byref doubleClicktime as Integer, Null as Integer)
+		    if not system.IsFunctionAvailable ("gtk_settings_get_default", libname) then
+		      break
+		    else
+		      dim gtkSettings as Ptr = gtk_settings_get_default()
+		      g_object_get (gtkSettings, "gtk-double-click-time", doubleClickTime, 0)
+		      // DoubleClickTime now holds the number of milliseconds
+		      doubleClickTime = doubleClickTime / 1000.0 * 60 ' converted to Ticks
+		    end if
+		  #endif
+		  
+		  if doubleClickTime <= 0 then
+		    doubleClickTime = 20 // 20 ticks = 1/3s = 330ms
+		  end
+		  
+		  return doubleClickTime
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1

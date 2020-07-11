@@ -2,6 +2,17 @@
 Protected Class App
 Inherits Application
 	#tag Event
+		Sub Open()
+		  #if TargetLinux
+		    // Adjust control and font sizes on Linux. See the About note in the modGTK3 module
+		    modGTK3.initGtkEntryFix  // adjusts the char-widths property of GtkEntry to be 0
+		    modGTK3.initGtkWidgetHeightFix // adjusts all controls to be at least their minimum height
+		    modGTK3.InitGlobalGTK3Style  // various CSS tweaks to override theme CSS
+		  #endif
+		End Sub
+	#tag EndEvent
+
+	#tag Event
 		Function UnhandledException(error As RuntimeException) As Boolean
 		  Dim md As New MessageDialog
 		  Dim trimmedStack() As String
