@@ -3804,43 +3804,6 @@ Implements MessageReceiver
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub private_redraw(x as Integer, y as Integer, width as Integer, height as Integer)
-		  // Invokes Canvas Paint
-		  
-		  #if TargetMacOS
-		    #pragma unused x
-		    #pragma unused y
-		    #pragma unused width
-		    #pragma unused height
-		    
-		    super.Invalidate false ' x,  y, width, height
-		    
-		  #elseif TargetWin32
-		    Declare Sub InvalidateRect Lib "User32" ( hwnd as Integer, lpRect as Ptr, erase as Boolean )
-		    Declare Sub UpdateWindow Lib "User32" ( hwnd as Integer )
-		    
-		    dim r as new MemoryBlock( 16 )
-		    r.Long( 0 ) = x
-		    r.Long( 4 ) = y
-		    r.Long( 8 ) = width
-		    r.Long( 12 ) = height
-		    
-		    InvalidateRect( me.Handle, r, false )
-		    UpdateWindow( me.Window.Handle )
-		  #else
-		    #pragma unused x
-		    #pragma unused y
-		    #pragma unused width
-		    #pragma unused height
-		    
-		    // Draw directly, without the Paint event
-		    drawContents (Graphics, self.TrueWindow)
-		  #endif
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub private_remove(offset as integer, length as integer, updateCaret as boolean = true)
 		  // This method is used internally by the control, and externally by the undo mechanism, you shouldn't use it directly, use instead selstart and seltext.
