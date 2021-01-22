@@ -2,6 +2,12 @@
 Protected Class App
 Inherits Application
 	#tag Event
+		Sub NewDocument()
+		  self.AutoQuit = true
+		End Sub
+	#tag EndEvent
+
+	#tag Event
 		Sub Open()
 		  #if TargetLinux
 		    // Adjust control and font sizes on Linux. See the About note in the modGTK3 module

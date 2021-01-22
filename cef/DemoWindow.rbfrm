@@ -140,6 +140,7 @@ Begin Window DemoWindow
       Text            =   ""
       TextColor       =   0
       TextFont        =   "smallSystem"
+      TextHeight      =   0
       TextSelectionColor=   0
       TextSize        =   0
       ThickInsertionPoint=   True
@@ -1695,29 +1696,44 @@ Begin Window DemoWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Rectangle ImageWell1
+   Begin Timer keepFocusInTextfieldTimer
+      Height          =   32
+      Index           =   -2147483648
+      Left            =   -56
+      LockedInPosition=   False
+      Mode            =   2
+      Period          =   500
+      Scope           =   0
+      TabPanelIndex   =   0
+      Top             =   29
+      Width           =   32
+   End
+   Begin GroupBox GroupBox1
       AutoDeactivate  =   True
-      BorderWidth     =   1
-      BottomRightColor=   &h000000
+      Bold            =   ""
+      Caption         =   ""
       Enabled         =   True
-      FillColor       =   "&ceeeeee"
-      Height          =   113
+      Height          =   111
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   666
-      LockBottom      =   False
+      Italic          =   ""
+      Left            =   670
+      LockBottom      =   ""
       LockedInPosition=   False
-      LockLeft        =   False
+      LockLeft        =   True
       LockRight       =   True
-      LockTop         =   True
+      LockTop         =   False
       Scope           =   0
-      TabIndex        =   56
+      TabIndex        =   62
       TabPanelIndex   =   0
-      Top             =   343
-      TopLeftColor    =   &h000000
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   328
+      Underline       =   ""
       Visible         =   True
-      Width           =   161
+      Width           =   157
       Begin CheckBox CheckBox6
          AutoDeactivate  =   True
          Bold            =   ""
@@ -1728,9 +1744,9 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "ImageWell1"
+         InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   674
+         Left            =   676
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1744,7 +1760,7 @@ Begin Window DemoWindow
          TextFont        =   "SmallSystem"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   353
+         Top             =   336
          Underline       =   ""
          Value           =   False
          Visible         =   True
@@ -1760,9 +1776,9 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "ImageWell1"
+         InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   674
+         Left            =   676
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1770,13 +1786,13 @@ Begin Window DemoWindow
          LockTop         =   True
          Scope           =   0
          State           =   0
-         TabIndex        =   2
+         TabIndex        =   1
          TabPanelIndex   =   0
          TabStop         =   True
          TextFont        =   "SmallSystem"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   377
+         Top             =   360
          Underline       =   ""
          Value           =   False
          Visible         =   True
@@ -1792,9 +1808,9 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "ImageWell1"
+         InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   674
+         Left            =   676
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1802,13 +1818,13 @@ Begin Window DemoWindow
          LockTop         =   True
          Scope           =   0
          State           =   0
-         TabIndex        =   3
+         TabIndex        =   2
          TabPanelIndex   =   0
          TabStop         =   True
          TextFont        =   "SmallSystem"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   400
+         Top             =   383
          Underline       =   ""
          Value           =   False
          Visible         =   True
@@ -1830,9 +1846,9 @@ Begin Window DemoWindow
          Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "ImageWell1"
+         InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   674
+         Left            =   676
          LimitText       =   0
          LockBottom      =   False
          LockedInPosition=   False
@@ -1843,7 +1859,7 @@ Begin Window DemoWindow
          Password        =   ""
          ReadOnly        =   ""
          Scope           =   0
-         TabIndex        =   4
+         TabIndex        =   3
          TabPanelIndex   =   0
          TabStop         =   True
          Text            =   ""
@@ -1851,7 +1867,7 @@ Begin Window DemoWindow
          TextFont        =   "SmallSystem"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   424
+         Top             =   407
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
@@ -1866,9 +1882,9 @@ Begin Window DemoWindow
          Height          =   20
          HelpTag         =   ""
          Index           =   -2147483648
-         InitialParent   =   "ImageWell1"
+         InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   709
+         Left            =   711
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -1877,7 +1893,7 @@ Begin Window DemoWindow
          Multiline       =   ""
          Scope           =   0
          Selectable      =   False
-         TabIndex        =   1
+         TabIndex        =   4
          TabPanelIndex   =   0
          Text            =   "Spaces per Tab"
          TextAlign       =   0
@@ -1885,24 +1901,12 @@ Begin Window DemoWindow
          TextFont        =   "SmallSystem"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   424
+         Top             =   407
          Transparent     =   True
          Underline       =   ""
          Visible         =   True
          Width           =   88
       End
-   End
-   Begin Timer keepFocusInTextfieldTimer
-      Height          =   32
-      Index           =   -2147483648
-      Left            =   -56
-      LockedInPosition=   False
-      Mode            =   2
-      Period          =   500
-      Scope           =   0
-      TabPanelIndex   =   0
-      Top             =   29
-      Width           =   32
    End
 End
 #tag EndWindow
@@ -1951,6 +1955,8 @@ End
 		  SetWindowModified(false)
 		  
 		  // Add a few row icons at random lines.
+		  rowicondata.Transparent = 1
+		  markerdata.Transparent = 1
 		  testField.LineIcon(rnd * testField.MaxVisibleLines) = rowicondata
 		  testField.LineIcon(rnd * testField.LineCount) = rowicondata
 		  testField.LineIcon(rnd * testField.LineCount) = rowicondata
@@ -2530,10 +2536,9 @@ End
 		Function UseBackgroundColorForLine(lineIndex as integer, byref lineBackgroundColor as color) As boolean
 		  //Return false //remove this to have lines with alternate colors as background.
 		  
-		  
 		  //highlight the currentLine.
 		  if lineIndex = me.CaretLine then
-		    lineBackgroundColor = &cFFFEE4 //light yellow
+		    lineBackgroundColor = EditFieldGlobals.AdjustColorForDarkMode (&cFFFEE4) //light yellow
 		    Return true
 		  end if
 		  
@@ -2542,7 +2547,7 @@ End
 		  //alternate backgrounds...
 		  if lineIndex mod 2 <> 0 then Return False
 		  
-		  lineBackgroundColor = RGB(237,243,255) //faint blue
+		  lineBackgroundColor = EditFieldGlobals.AdjustColorForDarkMode (RGB(237,243,255)) //faint blue
 		  Return true
 		End Function
 	#tag EndEvent
@@ -2550,7 +2555,7 @@ End
 		Sub PaintBelowLine(lineIndex as integer, g as graphics, x as integer, y as integer, w as integer, h as integer)
 		  if lineIndex <> me.CaretLine then Return
 		  
-		  g.ForeColor = &CCCCCCC
+		  g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&CCCCCCC)
 		  g.DrawLine x, y + h - 1, x + w, y + h - 1
 		  g.DrawLine x, y , x + w, y
 		End Sub
@@ -2560,8 +2565,9 @@ End
 		  #pragma unused onLine
 		  #pragma unused x
 		  #pragma unused y
-		  if x < 10 then _
-		  toggleBookmark
+		  if x < 10 then
+		    toggleBookmark
+		  end if
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -3076,6 +3082,30 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events keepFocusInTextfieldTimer
+	#tag Event
+		Sub Action()
+		  // On Windows and Linux clicking on any of the checkbox controls will take away the focus
+		  // from the textField, which is rather irritating. Therefore, this Timer will set the focus back
+		  // regularly.
+		  // This isn't perfect, though, as we cannot do it this way for PopupMenus, for instance, because
+		  // then this code would close them as soon as the user clicks on them to open their menu.
+		  // Therefore, this is just a cheap hack to keep the focus on the text as much as possible.
+		  
+		  #if TargetMacOS
+		    // not needed on OSX
+		    me.Mode = Timer.ModeOff
+		    return
+		  #endif
+		  
+		  dim focusCtrl as RectControl = self.Focus
+		  if focusCtrl isA CheckBox or focusCtrl isA PushButton or focusCtrl isA Listbox then
+		    // set the focus back to the textField
+		    TestField.SetFocus
+		  end if
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events CheckBox6
 	#tag Event
 		Sub Action()
@@ -3124,30 +3154,6 @@ End
 	#tag Event
 		Sub Open()
 		  me.Text = str(TestField.TabWidth)
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events keepFocusInTextfieldTimer
-	#tag Event
-		Sub Action()
-		  // On Windows and Linux clicking on any of the checkbox controls will take away the focus
-		  // from the textField, which is rather irritating. Therefore, this Timer will set the focus back
-		  // regularly.
-		  // This isn't perfect, though, as we cannot do it this way for PopupMenus, for instance, because
-		  // then this code would close them as soon as the user clicks on them to open their menu.
-		  // Therefore, this is just a cheap hack to keep the focus on the text as much as possible.
-		  
-		  #if TargetMacOS
-		    // not needed on OSX
-		    me.Mode = Timer.ModeOff
-		    return
-		  #endif
-		  
-		  dim focusCtrl as RectControl = self.Focus
-		  if focusCtrl isA CheckBox or focusCtrl isA PushButton or focusCtrl isA Listbox then
-		    // set the focus back to the textField
-		    TestField.SetFocus
-		  end if
 		End Sub
 	#tag EndEvent
 #tag EndEvents

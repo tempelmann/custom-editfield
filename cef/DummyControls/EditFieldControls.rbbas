@@ -32,16 +32,16 @@ Inherits canvas
 		  
 		  select case type
 		  case "class"
-		    tmp.Graphics.ForeColor = &c9393C0
+		    tmp.Graphics.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c9393C0)
 		  case "method"
-		    tmp.Graphics.ForeColor = &c82A3D5
+		    tmp.Graphics.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c82A3D5)
 		  else
-		    tmp.Graphics.ForeColor = &c888888
+		    tmp.Graphics.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c888888)
 		  end select
 		  
 		  tmp.Graphics.FillRect 0,0,tmp.Width,tmp.Height
 		  
-		  tmp.Graphics.ForeColor = &cffffff
+		  tmp.Graphics.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&cffffff)
 		  
 		  tmp.Graphics.TextFont = "arial"
 		  tmp.Graphics.TextSize = 10
@@ -55,12 +55,15 @@ Inherits canvas
 	#tag Method, Flags = &h0
 		Sub repaint(g as graphics)
 		  'gradient(g)
-		  g.DrawPicture plasticBack, 0, 0, g.Width, g.Height, 0, 0, plasticBack.Width, plasticBack.Height
+		  ' This does not play well with Dark Mode: g.DrawPicture plasticBack, 0, 0, g.Width, g.Height, 0, 0, plasticBack.Width, plasticBack.Height
 		  
 		  g.TextFont = "System"
 		  g.TextSize = 10
 		  
-		  g.ForeColor = &c444444
+		  dim col1 as Color = EditFieldGlobals.AdjustColorForDarkMode (&c444444)
+		  dim col2 as Color = EditFieldGlobals.AdjustColorForDarkMode (&cCCCCCC)
+		  
+		  g.ForeColor = col1
 		  g.DrawString TextSelectionInfo, 5, (g.Height + g.TextAscent)/2 - 1
 		  
 		  SelectionInfoWidth = g.StringWidth(TextSelectionInfo) + 10
@@ -79,11 +82,11 @@ Inherits canvas
 		  end if
 		  g.DrawPicture mKnobPict, SelectionInfoWidth + SymbolsWidth - mKnobPict.width - 5, (g.Height - mKnobPict.Height)/2 + 1
 		  
-		  g.ForeColor = &cCCCCCC
+		  g.ForeColor = col2
 		  g.DrawLine SelectionInfoWidth, 0, SelectionInfoWidth, g.Height
 		  g.DrawLine SelectionInfoWidth + SymbolsWidth, 0, SelectionInfoWidth + SymbolsWidth, g.Height
 		  
-		  g.ForeColor = &c444444
+		  g.ForeColor = col1
 		  g.DrawRect 0,-1,g.Width,g.Height + 2
 		  dim txt as String = "CEF Version: "+EditFieldGlobals.CEF_VERSION
 		  g.DrawString txt, g.Width - g.StringWidth(txt) - 2, (g.Height + g.TextAscent)/2 - 1

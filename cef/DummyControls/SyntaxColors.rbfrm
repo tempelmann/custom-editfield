@@ -232,20 +232,20 @@ End
 		  
 		  select case column
 		  case 1
-		    g.ForeColor = Context.HighlightColor
+		    g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (Context.HighlightColor)
 		    g.FillRect (g.Width - 18)/2, 2, 20, 20
-		    g.ForeColor = &c0
+		    g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c0)
 		    g.drawRect (g.Width - 18)/2, 2, 20, 20
 		    
 		    Return true
 		  case 2
 		    if context.HasBackgroundColor then
-		      g.ForeColor = Context.BackgroundColor
+		      g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (Context.BackgroundColor)
 		      g.FillRect (g.Width - 18)/2, 2, 20, 20
 		    else
 		      g.DrawLine (g.Width - 18)/2, 2, (g.Width - 18)/2 + 19, 21
 		    end if
-		    g.ForeColor = &c0
+		    g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c0)
 		    g.drawRect (g.Width - 18)/2, 2, 20, 20
 		    
 		    Return true

@@ -1,9 +1,36 @@
 #tag Module
 Protected Module EditFieldGlobals
+	#tag Method, Flags = &h1
+		Protected Function AdjustColorForDarkMode(c as Color) As Color
+		  // Returns Dark Mode equivalent color _if_ we're in Dark Mode (this assumes a Bright Mode color is passed)
+		  
+		  #if RBVersion >= 2019.02
+		    #if AppSupportsDarkMode
+		      if Color.IsDarkMode then
+		        if c = &cFFFFFF00 then // white
+		          c = Color.FillColor
+		        elseif c = &c00000000 then // black
+		          c = Color.TextColor
+		        else
+		          // make bright colors darker and vice versa
+		          c = InvertedModeColor (c)
+		        end if
+		      end if
+		    #endif
+		  #endif
+		  
+		  return c
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
-		Function DarkerColor(extends forColor as Color, offset as integer) As Color
+		Function DarkerColor(extends forColor as Color, offset as integer, adjustForDarkMode as Boolean) As Color
 		  //get a darker color for the given color.
-		  Return rgb( max(forColor.Red - offset, 0), max(forColor.green - offset, 0), max(forColor.blue - offset, 0))
+		  if adjustForDarkMode and IsDarkMode then
+		    Return rgb( min(forColor.Red + offset, 255), min(forColor.green + offset, 255), min(forColor.blue + offset, 255)) // darker
+		  else
+		    Return rgb( max(forColor.Red - offset, 0), max(forColor.green - offset, 0), max(forColor.blue - offset, 0))
+		  end if
 		End Function
 	#tag EndMethod
 
@@ -13,10 +40,74 @@ Protected Module EditFieldGlobals
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h1
+		Protected Function InvertedModeColor(c as Color) As Color
+		  // Issue #37 - support for Dark Mode
+		  #if RBVersion >= 2019.02
+		    #if AppSupportsDarkMode
+		      // make bright colors darker and vice versa
+		      if c = &c000000 then
+		        c = &cFFFFFF
+		      elseif c = &cFFFFFF then
+		        c = &c000000
+		      else
+		        // This brightness inversion is based on trial-and-error
+		        dim lum as Double = luminence (c)
+		        if lum > 0.6 then
+		          c = lerpColor (c, RGB(0,0,0), lum * 0.7)
+		        else
+		          c = lerpColor (c, &cFFFFFF, (1 - lum) * 0.7)
+		        end if
+		      end if
+		    #endif
+		  #endif
+		  
+		  return c
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function IsDarkMode() As Boolean
+		  // Issue #37 - support for Dark Mode
+		  dim isDark as Boolean
+		  #if RBVersion >= 2019.02
+		    #if AppSupportsDarkMode
+		      isDark = Color.IsDarkMode
+		    #endif
+		  #endif
+		  return isDark
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function lerp(start as Double, ende as Double, amt as Double) As Double
+		  dim diff as Double = ende - start
+		  dim adj as Double = diff * amt
+		  return start + adj
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function lerpColor(fromCol as Color, toCol as Color, amount as Double) As Color
+		  // https://stackoverflow.com/a/2690026/43615
+		  dim sr as Double = fromCol.Red
+		  dim sg as Double = fromCol.Green
+		  dim sb as Double = fromCol.Blue
+		  dim er as Double = toCol.Red
+		  dim eg as Double = toCol.Green
+		  dim eb as Double = toCol.Blue
+		  return RGB (lerp (sr, er, amount), lerp (sg, eg, amount), lerp (sb, eb, amount))
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
-		Function LighterColor(extends forColor as color, offset as integer) As color
+		Function LighterColor(extends forColor as color, offset as integer, adjustForDarkMode as Boolean) As color
 		  //get a darker color for the given color.
-		  Return rgb( min(forColor.Red + offset, 255), min(forColor.green + offset, 255), min(forColor.blue + offset, 255))
+		  if adjustForDarkMode and IsDarkMode then
+		    Return rgb( max(forColor.Red - offset, 0), max(forColor.green - offset, 0), max(forColor.blue - offset, 0)) // lighter
+		  else
+		    Return rgb( min(forColor.Red + offset, 255), min(forColor.green + offset, 255), min(forColor.blue + offset, 255))
+		  end if
 		End Function
 	#tag EndMethod
 
@@ -44,6 +135,30 @@ Protected Module EditFieldGlobals
 		    if source.Mid(i,1) <> Target.Mid(i,1) then Exit for
 		  next
 		  Return i - 1
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function luminence(c as Color) As Double
+		  dim r as Double = c.Red
+		  dim g as Double = c.Green
+		  dim b as Double = c.Blue
+		  
+		  return (r+r+b+g+g+g) / 6 / 255 // https://stackoverflow.com/a/596241/43615
+		  
+		  'return sqrt(0.299 * r*r + 0.587 * g*g + 0.114 * b*b) / 255
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function SupportDarkMode() As Boolean
+		  // Returns whether we need to support Dark Mode
+		  #if RBVersion >= 2019.02
+		    #if AppSupportsDarkMode
+		      return true
+		    #endif
+		  #endif
+		  return false
 		End Function
 	#tag EndMethod
 
@@ -94,7 +209,7 @@ Protected Module EditFieldGlobals
 	#tag EndProperty
 
 
-	#tag Constant, Name = CEF_VERSION, Type = String, Dynamic = False, Default = \"1.9.0", Scope = Protected
+	#tag Constant, Name = CEF_VERSION, Type = String, Dynamic = False, Default = \"1.10.0", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = DebugIndentation, Type = Boolean, Dynamic = False, Default = \"false", Scope = Protected

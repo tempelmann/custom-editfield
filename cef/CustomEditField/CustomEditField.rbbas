@@ -27,7 +27,7 @@ Implements MessageReceiver
 		  caretBlinker = nil
 		  lines = nil
 		  
-		  if CurrentFocusedField = self then mCurrentFocusedField = nil
+		  if CurrentFocusedField = self then gCurrentFocusedField = nil
 		  
 		  mWindowIsClosing = true
 		  Close
@@ -151,7 +151,7 @@ Implements MessageReceiver
 		  enableBlinker(SelLength = 0)
 		  Redraw
 		  
-		  mCurrentfocusedfield = self
+		  gCurrentFocusedField = self
 		End Sub
 	#tag EndEvent
 
@@ -495,6 +495,29 @@ Implements MessageReceiver
 		  BookmarkTable.Value(lineIndex) = nil
 		  InvalidateLine(lineIndex)
 		  Redraw
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		 Shared Sub AppearanceChanged()
+		  // Could be called when Dark Mode is invoked or exited (#37) so that all CEF windows get refreshed.
+		  // You'd use the App's AppearanceChanged event for this (see Demo project).
+		  // However, as long as all colors are dynamically resolved (by getCurrentModeColor), this is
+		  // not necessary, as a Mode switch also calls to refresh our Canvas, and then we redraw everything
+		  // with the other colors automatically.
+		  //
+		  // So, while this code is not needed right now, I leave it in here for others to learn how to do this
+		  // (i.e. how to remember all created objects of a class and then invoke a method on all of them.
+		  
+		  for each cef_wr as WeakRef in gWeakCEFs.Keys
+		    dim cef as CustomEditField = CustomEditField (cef_wr.Value)
+		    if cef = nil then
+		      break // this should not happen
+		    else
+		      // here we'd update the colors where necessary
+		      'cef.UpdateColors
+		    end if
+		  next
 		End Sub
 	#tag EndMethod
 
@@ -1132,12 +1155,21 @@ Implements MessageReceiver
 		End Sub
 	#tag EndMethod
 
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Function ColorReturningProc() As Color
+	#tag EndDelegateDeclaration
+
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  // Calling the overridden superclass constructor.
+		  // #37 - remember all opened CEF objects so that we could update them if Dark Mode is invoked
+		  mWeakSelf = new WeakRef (self)
+		  if gWeakCEFs = nil then gWeakCEFs = new Dictionary
+		  gWeakCEFs.Value (mWeakSelf) = true
+		  
 		  Super.RectControl
 		  ignoreRepaint = true
-		  
+		  mBrightModeColors = new Dictionary
+		  mDarkModeColors = new Dictionary
 		End Sub
 	#tag EndMethod
 
@@ -1328,6 +1360,12 @@ Implements MessageReceiver
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub Destructor()
+		  gWeakCEFs.Remove (mWeakSelf)
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub DisableUndoHandling()
 		  UndoMgr.Enabled = false
@@ -1502,7 +1540,7 @@ Implements MessageReceiver
 		    
 		    // repaint gutter background, if needed
 		    if fullRefresh or lastDrawnTopLine <> ScrollPosition then
-		      gg.ForeColor = GutterBackgroundColor.lighterColor(10)
+		      gg.ForeColor = GutterBackgroundColor.lighterColor(10, true)
 		      gg.FillRect LineNumOffset - FoldingOffset, 0, FoldingOffset, g.Height
 		      gg.ForeColor = GutterBackgroundColor
 		      gg.FillRect 0, 0, gutterWidth - FoldingOffset, g.Height
@@ -1592,7 +1630,7 @@ Implements MessageReceiver
 		          if hasFocus or not tmpSelection.LosesFocus then
 		            g.ForeColor = tmpSelection.SelectionColor
 		          else
-		            g.ForeColor = BackColor.darkerColor(30)
+		            g.ForeColor = BackColor.darkerColor(30, true)
 		          end if
 		          
 		          if lineIdx > tmpSelection.StartLine and lineIdx < tmpSelection.EndLine then //fully selected line
@@ -1652,7 +1690,7 @@ Implements MessageReceiver
 		      
 		      //autocomplete suggestion
 		      if SelLength = 0 and lineIdx = CaretLine and trailingSuggestion <> "" then
-		        g.ForeColor = &cAAAAAA
+		        g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&cAAAAAA)
 		        g.DrawString trailingSuggestion, AutocompleteSuggestionInsertionX, sy - (g.TextHeight - g.TextAscent)
 		      end if
 		      
@@ -1661,17 +1699,17 @@ Implements MessageReceiver
 		        
 		        //caret line is slightly darker
 		        if EnableLineFoldings then
-		          gg.ForeColor = GutterBackgroundColor.lighterColor(10)
+		          gg.ForeColor = GutterBackgroundColor.lighterColor(10, true)
 		          gg.FillRect LineNumOffset - FoldingOffset - 1, sy - g.TextHeight, FoldingOffset, TextHeight
 		        end if
 		        if CaretLine = lineIdx then
-		          gg.ForeColor = GutterBackgroundColor.darkerColor(20)
+		          gg.ForeColor = GutterBackgroundColor.darkerColor(20, true)
 		          gg.FillRect 0, sy - g.TextHeight, LineNumOffset - 1 - FoldingOffset, TextHeight
 		          gg.Bold = true
-		          gg.ForeColor = &c000000
+		          gg.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c000000)
 		        else
 		          #if FlashRefreshRanges then
-		            gg.ForeColor =  rgb(rnd * 255, rnd * 255, rnd * 255) 'GutterBackgroundColor
+		            gg.ForeColor =  EditFieldGlobals.AdjustColorForDarkMode (rgb(rnd * 255, rnd * 255, rnd * 255)) 'GutterBackgroundColor
 		          #else
 		            gg.ForeColor =  GutterBackgroundColor
 		          #endif
@@ -1778,24 +1816,24 @@ Implements MessageReceiver
 		      dim blockPicture as Picture = New Picture(self.Width - LineNumOffset, self.Height, 32)
 		      Dim gb As Graphics = blockPicture.Graphics
 		      
-		      gb.ForeColor = &c000000
+		      gb.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c000000)
 		      gb.FillRect 0, 0, blockPicture.Width, blockPicture.Height
 		      
 		      gb = blockPicture.Mask.Graphics
-		      gb.ForeColor = &cAAAAAA
+		      gb.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&cAAAAAA)
 		      gb.FillRect 0, 0, blockPicture.Width, blockPicture.Height
 		      
-		      gb.ForeColor = &cffffff
+		      gb.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&cffffff)
 		      gb.FillRoundRect MouseOverBlock.value("x") + 1, MouseOverBlock.Value("y") + 1, MouseOverBlock.Value("w") - 2, MouseOverBlock.Value("h") - 2, 10,10
 		      
-		      gb.ForeColor = &cA0A0A0
+		      gb.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&cA0A0A0)
 		      gb.DrawRoundRect MouseOverBlock.value("x"), MouseOverBlock.Value("y"), MouseOverBlock.Value("w"), MouseOverBlock.Value("h"), 6,6
 		      
-		      gb.ForeColor = &C999999
+		      gb.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&C999999)
 		      gb.DrawRoundRect MouseOverBlock.value("x"), MouseOverBlock.Value("y"), MouseOverBlock.Value("w"), MouseOverBlock.Value("h"), 8,8
 		      gb.DrawRoundRect MouseOverBlock.value("x")+1, MouseOverBlock.Value("y")+1, MouseOverBlock.Value("w")-2, MouseOverBlock.Value("h")-2, 10,10
 		      
-		      gb.ForeColor = &C888888
+		      gb.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&C888888)
 		      gb.DrawRoundRect MouseOverBlock.value("x"), MouseOverBlock.Value("y"), MouseOverBlock.Value("w"), MouseOverBlock.Value("h"), 10,10
 		      gb.DrawRoundRect MouseOverBlock.value("x")+1, MouseOverBlock.Value("y")+1, MouseOverBlock.Value("w")-2, MouseOverBlock.Value("h")-2, 8,8
 		      
@@ -1845,16 +1883,16 @@ Implements MessageReceiver
 		    // paint visual block feedback
 		    if MouseOverBlock <> nil then
 		      dim blockPicture as Picture = New Picture(self.Width - LineNumOffset, self.Height, 32)
-		      blockPicture.Graphics.ForeColor = &c000000
+		      blockPicture.Graphics.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c000000)
 		      blockPicture.Graphics.FillRect 0, 0, blockPicture.Width, blockPicture.Height
 		      
-		      blockPicture.mask.Graphics.ForeColor = &cAAAAAA
+		      blockPicture.mask.Graphics.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&cAAAAAA)
 		      blockPicture.mask.Graphics.FillRect 0, 0, blockPicture.Width, blockPicture.Height
 		      
-		      blockPicture.mask.Graphics.ForeColor = &cffffff
+		      blockPicture.mask.Graphics.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&cffffff)
 		      blockPicture.Mask.Graphics.FillRoundRect MouseOverBlock.value("x") + 1, MouseOverBlock.Value("y") + 1, MouseOverBlock.Value("w") - 2, MouseOverBlock.Value("h") - 2, 10, 10
 		      
-		      blockPicture.mask.Graphics.ForeColor = &C888888
+		      blockPicture.mask.Graphics.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&C888888)
 		      blockPicture.mask.Graphics.PenWidth = 2
 		      blockPicture.mask.Graphics.PenHeight = 2
 		      blockPicture.Mask.Graphics.DrawRoundRect MouseOverBlock.value("x"), MouseOverBlock.Value("y"), MouseOverBlock.Value("w"), MouseOverBlock.Value("h"), 10, 10
@@ -2007,6 +2045,36 @@ Implements MessageReceiver
 		  mIgnoreRepaintCount = 0
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function getCurrentModeColor(propertyName as String) As Color
+		  dim result as Variant
+		  if EditFieldGlobals.IsDarkMode then
+		    result = mDarkModeColors.Lookup (propertyName, nil)
+		    if result = nil then
+		      // We were in Bright Mode before, now we can fetch the correct Dark Mode color
+		      result = mBrightModeColors.Lookup (propertyName, nil)
+		      dim dark as Color = EditFieldGlobals.AdjustColorForDarkMode (result)
+		      mDarkModeColors.Value (propertyName) = dark
+		    elseif result isA ColorReturningProc then
+		      result = ColorReturningProc(result).Invoke ()
+		      mDarkModeColors.Value (propertyName) = result
+		    end if
+		  else
+		    result = mBrightModeColors.Lookup (propertyName, nil)
+		    if result is nil then
+		      break // This should not happen
+		      result = mDarkModeColors.Lookup (propertyName, nil)
+		      result = EditFieldGlobals.InvertedModeColor (result)
+		      mBrightModeColors.Value (propertyName) = result
+		    elseif result isA ColorReturningProc then
+		      result = ColorReturningProc(result).Invoke ()
+		      mBrightModeColors.Value (propertyName) = result
+		    end if
+		  end if
+		  return result
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -3466,7 +3534,7 @@ Implements MessageReceiver
 		  //paints a blue circle over the highlighted block char.
 		  g.PenWidth = 2
 		  g.PenHeight = 2
-		  g.ForeColor = &c4444FF
+		  g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&c4444FF)
 		  g.DrawOval blockBeginPosX - 2 - g.StringWidth("(")/2, blockBeginPosY - g.TextHeight - 1, g.TextHeight + 4, g.TextHeight + 4
 		  g.PenWidth = 1
 		  g.PenHeight = 1
@@ -4330,6 +4398,30 @@ Implements MessageReceiver
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub setBrightModeColor(c as Color, propertyName as String)
+		  // Issue #37 - support for Dark Mode
+		  propertyName = propertyName.Replace (".Set", ".Get")
+		  mBrightModeColors.Value (propertyName) = c
+		  if EditFieldGlobals.SupportDarkMode then
+		    if not EditFieldGlobals.IsDarkMode then
+		      mDarkModeColors.Value (propertyName) = nil // will be set in getter once we are out of Dark Mode
+		    else
+		      dim dark as Color = EditFieldGlobals.AdjustColorForDarkMode (c)
+		      mDarkModeColors.Value (propertyName) = dark
+		    end if
+		  end if
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub setColorProvider(providerFunction as ColorReturningProc, propertyName as String)
+		  propertyName = propertyName.Replace (".Set", ".Get")
+		  mBrightModeColors.Value (propertyName) = providerFunction
+		  mDarkModeColors.Value (propertyName) = providerFunction
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub SetScrollbars(horizontal as scrollbar, vertical as scrollbar)
 		  //sets the scrollbars
@@ -4922,12 +5014,12 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mBackColor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mBackColor = value
+			  setBrightModeColor (value, CurrentMethodName)
 			  InvalidateAllLines
 			  redraw
 			End Set
@@ -4950,10 +5042,10 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  if mBlockendimage = nil then
-			    mBlockendimage = EditFieldGlobals.LoadMaskedPicture(blockEndMarker)
+			  if gBlockendimage = nil then
+			    gBlockendimage = EditFieldGlobals.LoadMaskedPicture(blockEndMarker)
 			  end if
-			  return mBlockendimage
+			  return gBlockendimage
 			End Get
 		#tag EndGetter
 		Protected Shared BlockEndImage As picture
@@ -4962,10 +5054,10 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  if mBlockfoldedimage = nil then
-			    mBlockfoldedimage = EditFieldGlobals.LoadMaskedPicture(blockFoldedMarker)
+			  if gBlockfoldedimage = nil then
+			    gBlockfoldedimage = EditFieldGlobals.LoadMaskedPicture(blockFoldedMarker)
 			  end if
-			  return mBlockfoldedimage
+			  return gBlockfoldedimage
 			End Get
 		#tag EndGetter
 		Protected Shared BlockFoldedImage As picture
@@ -4974,10 +5066,10 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  if mBlockstartimage = nil then
-			    mBlockstartimage = EditFieldGlobals.LoadMaskedPicture(blockStartMarker)
+			  if gBlockstartimage = nil then
+			    gBlockstartimage = EditFieldGlobals.LoadMaskedPicture(blockStartMarker)
 			  end if
-			  return mBlockstartimage
+			  return gBlockstartimage
 			End Get
 		#tag EndGetter
 		Protected Shared BlockStartImage As picture
@@ -4986,10 +5078,10 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  if mBookmarkimage = nil then
-			    mBookmarkimage = EditFieldGlobals.LoadMaskedPicture(bookmarksimg)
+			  if gBookmarkImage = nil then
+			    gBookmarkImage = EditFieldGlobals.LoadMaskedPicture(bookmarksimg)
 			  end if
-			  return mBookmarkimage
+			  return gBookmarkImage
 			End Get
 		#tag EndGetter
 		Protected Shared BookmarkImage As Picture
@@ -5032,21 +5124,34 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mFrameColor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mFrameColor = value
+			  setBrightModeColor (value, CurrentMethodName)
 			  Redraw
 			End Set
 		#tag EndSetter
 		BorderColor As color
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h0
-		BracketHighlightColor As color = &cFFFF00
-	#tag EndProperty
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return getCurrentModeColor (CurrentMethodName)
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  if value = &c00000000 then // if it's not explicitly assigned, we use a default (yellow)
+			    value = &cFFFF00
+			  end if
+			  setBrightModeColor (value, CurrentMethodName)
+			End Set
+		#tag EndSetter
+		BracketHighlightColor As Color
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h1
 		Protected caretBlinker As CaretBlinker
@@ -5055,12 +5160,12 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mCaretColor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mCaretColor = value
+			  setBrightModeColor (value, CurrentMethodName)
 			  redraw
 			End Set
 		#tag EndSetter
@@ -5128,7 +5233,7 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mCurrentfocusedfield
+			  return gCurrentFocusedField
 			End Get
 		#tag EndGetter
 		Shared CurrentFocusedField As CustomEditField
@@ -5149,12 +5254,12 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mDirtylinescolor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mDirtylinescolor = value
+			  setBrightModeColor (value, CurrentMethodName)
 			  InvalidateAllLines
 			  Redraw
 			End Set
@@ -5282,6 +5387,30 @@ Implements MessageReceiver
 		Protected fullRefresh As boolean
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private Shared gBlockendimage As picture
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared gBlockfoldedimage As picture
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared gBlockstartimage As picture
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared gBookmarkImage As Picture
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared gCurrentFocusedField As CustomEditField
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared gRightMargInlineImage As picture
+	#tag EndProperty
+
 	#tag Property, Flags = &h1
 		Protected Gutter As picture
 	#tag EndProperty
@@ -5289,12 +5418,12 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mGutterBackgroundColor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mGutterBackgroundColor = value
+			  setBrightModeColor (value, CurrentMethodName)
 			  InvalidateAllLines
 			  Redraw
 			End Set
@@ -5305,12 +5434,12 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mGutterSeparationLineColor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mGutterSeparationLineColor = value
+			  setBrightModeColor (value, CurrentMethodName)
 			  InvalidateAllLines
 			  Redraw
 			End Set
@@ -5326,6 +5455,10 @@ Implements MessageReceiver
 		#tag EndGetter
 		GutterWidth As Integer
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private Shared gWeakCEFs As Dictionary
+	#tag EndProperty
 
 	#tag Property, Flags = &h1
 		Protected hasFocus As boolean
@@ -5525,12 +5658,12 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mLineNumbersColor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mLineNumbersColor = value
+			  setBrightModeColor (value, CurrentMethodName)
 			  InvalidateAllLines
 			  Redraw
 			End Set
@@ -5655,31 +5788,11 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mBackColor As color
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared mBlockendimage As picture
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared mBlockfoldedimage As picture
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared mBlockstartimage As picture
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared mBookmarkimage As Picture
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mBookmarktable As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mCaretColor As color
+		Private mBrightModeColors As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -5695,11 +5808,7 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Shared mCurrentfocusedfield As CustomEditField
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mDirtylinescolor As color = &cFF9999
+		Private mDarkModeColors As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -5724,18 +5833,6 @@ Implements MessageReceiver
 
 	#tag Property, Flags = &h21
 		Private mEnablelinefoldings As boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mFrameColor As color
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mGutterBackgroundColor As color
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mGutterSeparationLineColor As Color
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -5772,10 +5869,6 @@ Implements MessageReceiver
 
 	#tag Property, Flags = &h21
 		Private mLeftMarginOffset As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mLineNumbersColor As color
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -5846,10 +5939,6 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private Shared mRightmarginlineimage As picture
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mscrollPosition As Integer
 	#tag EndProperty
 
@@ -5874,19 +5963,11 @@ Implements MessageReceiver
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mTextColor As color
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
 		Private mTextFont As string
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mTextHeight As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mTextselectioncolor As color
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -5907,6 +5988,10 @@ Implements MessageReceiver
 
 	#tag Property, Flags = &h21
 		Private mVisibleLineRange As DataRange
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mWeakSelf As WeakRef
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -5964,13 +6049,13 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h1
 		#tag Getter
 			Get
-			  if mRightmarginlineimage = nil then
-			    mRightmarginlineimage = New Picture(1,1,32)
-			    mRightmarginlineimage.Graphics.Pixel(0,0) = &cff
-			    mRightmarginlineimage.Mask.Graphics.Pixel(0,0) = &cAAAAAA
+			  if gRightMargInlineImage = nil then
+			    gRightMargInlineImage = New Picture(1,1,32)
+			    gRightMargInlineImage.Graphics.Pixel(0,0) = &cff
+			    gRightMargInlineImage.Mask.Graphics.Pixel(0,0) = &cAAAAAA
 			  end if
 			  
-			  return mRightmarginlineimage
+			  return gRightMargInlineImage
 			End Get
 		#tag EndGetter
 		Protected Shared RightMarginLineImage As picture
@@ -6186,12 +6271,12 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mTextColor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mTextColor = value
+			  setBrightModeColor (value, CurrentMethodName)
 			  InvalidateAllLines
 			  Redraw
 			End Set
@@ -6249,16 +6334,16 @@ Implements MessageReceiver
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mTextselectioncolor
+			  return getCurrentModeColor (CurrentMethodName)
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  mTextselectioncolor = value
-			  
-			  //set default selection color to system default, if none specified.
-			  if mTextselectioncolor = &c000000 then
-			    mTextselectioncolor = HighlightColor
+			  // Set default selection color to system default if none specified.
+			  if value = &c000000 then
+			    setColorProvider (AddressOf HighlightColor, CurrentMethodName)
+			  else
+			    setBrightModeColor (value, CurrentMethodName)
 			  end if
 			End Set
 		#tag EndSetter
@@ -6510,7 +6595,7 @@ Implements MessageReceiver
 			Visible=true
 			Group="Behavior"
 			InitialValue="&cFFFF00"
-			Type="color"
+			Type="Color"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="CaretColor"

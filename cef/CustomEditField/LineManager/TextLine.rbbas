@@ -210,10 +210,10 @@ Inherits TextSegment
 	#tag Method, Flags = &h0
 		Sub Paint(storage as gapBuffer, g as graphics, x as double, y as double, defaultColor as color, displayInvisible as boolean, selStart as integer, selLength as integer, showLeadingSpace as boolean, indentVisually as Boolean)
 		  //draws this line
+		  
 		  #if not DebugBuild
 		    #pragma DisableBackgroundTasks
 		    #pragma DisableBoundsChecking
-		    
 		  #endif
 		  
 		  //if there are no words in this line, we need to at least quick-parse it so we can display it.
@@ -229,7 +229,7 @@ Inherits TextSegment
 		  dim text as String
 		  dim word as TextSegment
 		  dim wordFound as Boolean
-		  dim darkerHilightColor as Color = HighlightColor.darkerColor(50)
+		  dim darkerHilightColor as Color = HighlightColor.darkerColor(50, true)
 		  
 		  //paint tokens
 		  for i as Integer = 0 to words.Ubound
@@ -258,7 +258,7 @@ Inherits TextSegment
 		      wordFound = true
 		      //Highlight color
 		      if highlighted then
-		        g.ForeColor = word.textColor
+		        g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (word.textColor)
 		      else
 		        g.ForeColor = defaultColor
 		      end if
@@ -270,7 +270,7 @@ Inherits TextSegment
 		      wordFound = true
 		      //Highlight color
 		      if highlighted then
-		        g.ForeColor = word.textColor
+		        g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (word.textColor)
 		      else
 		        g.ForeColor = defaultColor
 		      end if
@@ -314,10 +314,11 @@ Inherits TextSegment
 		          oldc = oldc.invertColor
 		        end if
 		        
-		        g.ForeColor = TextPlaceholder(word).placeholderBackgroundColor.darkerColor(colorOffset)
+		        dim baseCol as Color = TextPlaceholder(word).placeholderBackgroundColor
+		        g.ForeColor = baseCol.darkerColor(colorOffset, true)
 		        g.FillRoundRect x, y - g.TextAscent, word.width, g.TextHeight + 1, g.TextHeight, g.TextHeight
 		        
-		        g.ForeColor = TextPlaceholder(word).placeholderBackgroundColor.darkerColor(30).darkerColor(colorOffset)
+		        g.ForeColor = baseCol.darkerColor(30, true).darkerColor(colorOffset, true)
 		        g.DrawRoundRect x, y - g.TextAscent, word.width, g.TextHeight + 1, g.TextHeight, g.TextHeight
 		        
 		        g.ForeColor = oldc
@@ -356,7 +357,7 @@ Inherits TextSegment
 		            g.DrawString t1, x, y
 		            w = g.StringWidth(t1)
 		          end if
-		          g.ForeColor = &cFFFFFF // white
+		          g.ForeColor = EditFieldGlobals.AdjustColorForDarkMode (&cFFFFFF) // white
 		          g.DrawString t2, x+w, y
 		          if t3 <> "" then
 		            w = g.StringWidth(t1+t2)
@@ -490,7 +491,7 @@ Inherits TextSegment
 		  //paint tokens
 		  for i as Integer = 0 to UBound(Words)
 		    Word = words(i)
-		    g.ForeColor = HighlightColor.darkerColor(50)
+		    g.ForeColor = HighlightColor.darkerColor(50, false)
 		    
 		    if word.TYPE = TYPE_SPACE then
 		      text = " "
@@ -579,7 +580,7 @@ Inherits TextSegment
 		        g.ForeColor = TextPlaceholder(word).placeholderBackgroundColor
 		        g.fillRoundRect x, y - g.TextAscent, word.width, g.TextHeight + 1, g.TextHeight, g.TextHeight
 		        
-		        g.ForeColor = TextPlaceholder(word).placeholderBackgroundColor.darkerColor(30)
+		        g.ForeColor = TextPlaceholder(word).placeholderBackgroundColor.darkerColor(30, false)
 		        g.DrawRoundRect x, y - g.TextAscent, word.width, g.TextHeight + 1, g.TextHeight, g.TextHeight
 		        g.ForeColor = oldc
 		      end if
