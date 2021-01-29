@@ -1721,7 +1721,7 @@ Begin Window DemoWindow
       Left            =   670
       LockBottom      =   ""
       LockedInPosition=   False
-      LockLeft        =   True
+      LockLeft        =   False
       LockRight       =   True
       LockTop         =   False
       Scope           =   0
