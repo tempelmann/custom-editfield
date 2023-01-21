@@ -3,7 +3,7 @@ Protected Module Info
 	#tag Note, Name = 1. Info
 		Note: The code is now hosted and updated here:
 		
-		  http://github.com/tempelmann/custom-editfield
+		  https://github.com/tempelmann/custom-editfield
 		
 		The following is outdated information. For latest list of issues, see the above website!
 		

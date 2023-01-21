@@ -209,7 +209,7 @@ Protected Module EditFieldGlobals
 	#tag EndProperty
 
 
-	#tag Constant, Name = CEF_VERSION, Type = String, Dynamic = False, Default = \"1.10.0", Scope = Protected
+	#tag Constant, Name = CEF_VERSION, Type = String, Dynamic = False, Default = \"1.11.0", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = DebugIndentation, Type = Boolean, Dynamic = False, Default = \"false", Scope = Protected

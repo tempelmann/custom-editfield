@@ -1,6 +1,16 @@
 #tag Class
 Protected Class HighlightDefinition
 	#tag Method, Flags = &h21
+		Private Sub addBlankSpaceContext()
+		  // Add a blank space context, this will tokenize strings.
+		  dim blankSpaceContext as new HighlightContext(false)
+		  blankSpaceContext.EntryRegEx = "([ ]|\t|\x0A|(?:\x0D\x0A?))" // instead of: "([\s])"
+		  blankSpaceContext.Name = "fieldwhitespace"
+		  addContext(blankSpaceContext)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub addContext(context as HighlightContext)
 		  if Context=nil then Return
 		  subContexts.Append(Context)
@@ -53,19 +63,25 @@ Protected Class HighlightDefinition
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor()
+		Sub Constructor(fixIssue40 as Boolean = true)
 		  //init regex scanner
 		  mContextRegex = new RegEx
 		  mContextRegex.Options.DotMatchAll=true
 		  
 		  mSymbolRegex = new RegEx
 		  
-		  //add a blank space context, this will tokenize strings.
-		  dim blankSpaceContext as new HighlightContext(false, false)
-		  blankSpaceContext.EntryRegEx = "([ ]|\t|\x0A|(?:\x0D\x0A?))"'"([\s])"
-		  blankSpaceContext.Name = "fieldwhitespace"
+		  // We used to add a blank space context here, for tokenizing strings.
+		  // It's been move to the end of the LoadFromXml code so that it
+		  // comes last, not first, in order to give other rules a chance to
+		  // include whitespace in their regex checks. See issue #40.
+		  // If you find that this causes problems, you can pass false to this constructor to get
+		  // the behavior from before v1.11.0
+		  mFixIssue40 = fixIssue40
+		  if not mFixIssue40 then
+		    // Add a blank space context, this will tokenize strings.
+		    self.addBlankSpaceContext()
+		  end if
 		  
-		  addContext(blankSpaceContext)
 		  blockEndDef = new Dictionary
 		  blockStartDef = new Dictionary
 		  lineContinuationDef = new Dictionary
@@ -572,6 +588,12 @@ Protected Class HighlightDefinition
 		      end select
 		    Next
 		    
+		    if mFixIssue40 then
+		      // Add a blank space context, this will tokenize strings.
+		      // (This used to be in the Constructor - now we add it last for better Markdown support, see issue #40)
+		      self.addBlankSpaceContext()
+		    end if
+		    
 		    Return true
 		  Catch
 		    break
@@ -877,6 +899,10 @@ Protected Class HighlightDefinition
 
 	#tag Property, Flags = &h21
 		Private mContextRegex As RegEx
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mFixIssue40 As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

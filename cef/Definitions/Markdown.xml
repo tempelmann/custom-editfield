@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<highlightDefinition version="1.2">
+	<name>Markdown</name>
+
+	<contexts defaultColor="#000000" caseSensitive="no">		
+		<highlightContext name="BoldUnderscore" highlightColor="#326510">
+			<startRegEx>\s__[^ \t]</startRegEx>
+			<endRegEx>__</endRegEx>
+		</highlightContext>
+	</contexts>
+		
+</highlightDefinition>
