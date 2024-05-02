@@ -195,6 +195,7 @@
 				<string>True</string>
 				<string>Try</string>
 				<string>Until</string>
+				<string>Var</string>
 				<string>Wend</string>
 				<string>While</string>
 				<string>With</string>
