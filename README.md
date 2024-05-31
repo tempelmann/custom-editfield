@@ -1,6 +1,8 @@
 # custom-editfield
 
-***Note: This is the official version since 2015. The code at code.google.com/p/custom-editfield is outdated.***
+***Note: This has been the official version since 2015. The code at code.google.com/p/custom-editfield is outdated.***
+
+***Note 2: A new version using Xojo API 2 can be found here: [SyntaxArea](https://github.com/gkjpettet/SyntaxArea)***
 
 *CustomEditField* is a set of classes that are primarily designed to display source code and similar structured text, such as XML. It is ideal to show and edit Xojo / REALbasic (RbScript) code, for instance.
 
